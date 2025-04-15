@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+mysql-connector-python
+configparser
+matplotlib
+geopandas
+numpy
+sqlalchemy
+shapely
