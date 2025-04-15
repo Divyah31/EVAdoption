@@ -1,4 +1,4 @@
-Simple Web Application Using Flask Framework
+Web Application Using Flask Framework
 
 Database Query: Connect to MySQL database and query data from the melbourne_cbd_shape table.
 Data Display: Use Jinja2 template engine to display queried data on the webpage.
