@@ -1,0 +1,62 @@
+Model,Vehicle Type,Variant Details,Fast Charge Time (Minutes),Range (km),Energy Consumption (kWh/100km),ANCAP Safety Rating,Listed Price ($AUD)
+Audi e-tron,Large SUV,Audi e-tron 55 Auto quattro,"85 mins (5%-80% charge, 50kW charger)",459,23.2,[object Object],79800
+Audi e-tron GT,Large Car,2024 Audi e-tron GT Auto e-quattro MY24,"23 mins (5%-80% charge, 270kW charger)",540,19.2,[object Object],181784
+BMW 5 Series BEV,Large Car,2024 BMW i5 eDrive40 M Sport G60 Auto,"30 mins (10%-80% charge, 205kW charger)",550,16.5,[object Object],155900
+BMW i4,Medium Car,2024 BMW i4 eDrive35 M Sport G26 Auto,"31 mins (10%-80% charge, 205kW charger)",430,17.4,[object Object],85900
+BMW i7,Large Car,2024 BMW i7 xDrive60 M Sport G70 Auto AWD,"34 mins (10%-80% charge, 195kW charger)",625,22.2,[object Object],306900
+BMW iX,Large SUV,2024 BMW iX xDrive40 Sport I20 Auto AWD,"31 mins (10%-80% charge, 150kW charger)",420,22.5,[object Object],136900
+BMW iX1,Small SUV,2024 BMW iX1 eDrive20 xLine U11 Auto,"29 mins (10%-80% charge, 130kW charger)",464,15.7,[object Object],94171
+BMW iX2,Small SUV,2024 BMW iX2 eDrive20 M Sport U10 Auto,"29 mins (10%-80% charge, 130kW charger)",427,17.1,[object Object],82900
+BMW iX3,Medium SUV,2024 BMW iX3 M Sport G08 Auto,"450 mins (0%-100% charge, 11kW charger)",440,21.6,[object Object],89100
+BYD Atto 3,Medium SUV,2024 BYD ATTO 3 Standard Auto,"29 mins (10%-80% charge, 150kW charger)",345,16,[object Object],44499
+BYD Dolphin,Small Car,2024 BYD Dolphin Dynamic Auto,"38 mins (10%-80% charge, 80kW charger)",410,21.6,[object Object],36890
+BYD Seal,Medium Car,2024 BYD Seal Dynamic Auto,"26 mins (10%-80% charge, 150kW charger)",510,13.8,[object Object],49888
+CUPRA Born,Small Car,2024 CUPRA Born Auto MY24,"26 mins (10%-80% charge, 170kW charger)",511,17,[object Object],59990
+Fiat 500e,Small Car,2023 Fiat 500e La Prima Auto MY23,"35 mins (0%-80% charge, 85kW charger)",311,14.4,[object Object],52500
+Ford Mustang Mach-E,Large SUV,2023 Ford Mustang Mach-E Select Auto MY23.75,"38 mins (10%-80% charge, 150kW charger)",470,17.8,[object Object],64990
+GWM Ora,Small Car,2024 GWM Ora Standard Range Auto,"41 mins (10%-80% charge, 80kW charger)",310,16.7,[object Object],35990
+Genesis G80 BEV,Large Car,2023 Genesis G80 Auto AWD MY23,"22 mins (10%-80% charge, 350kW charger)",520,19.1,[object Object],132500
+Genesis GV60,Small SUV,2024 Genesis GV60 AWD Auto AWD MY24,"18 mins (10%-80% charge, 350kW charger)",470,18.8,[object Object],103384
+Genesis GV70 BEV,Medium SUV,2023 Genesis GV70 Perfomance Auto AWD MY23,"18 mins (10%-80% charge, 350kW charger)",445,19.9,[object Object],125858
+Hyundai Ioniq 5,Medium SUV,2024 Hyundai IONIQ 5 Auto 2WD MY25,"18 mins (10%-80% charge, 800V charger)",451,17.9,[object Object],67500
+Hyundai Ioniq 6,Medium Car,2024 Hyundai IONIQ 6 Auto 2WD MY24,"18 mins (10%-80% charge, 800V charger)",614,14.3,[object Object],66500
+Hyundai Kona BEV,Small SUV,2024 Hyundai Kona Electric Elite Auto 2WD MY25,"47 mins (10%-80% charge, 100kW charger)",513,14.6,[object Object],54000
+Jaguar I-Pace,Large SUV,2024 Jaguar I-PACE EV400 R-Dynamic SE Auto AWD MY24.5,"765 mins (full charge, 7kW charger)",446,23,[object Object],147475
+Kia EV5,Medium SUV,Coming Soon,,400,18.2,[object Object],70000
+Kia EV6,Large SUV,2024 Kia EV6 Air Auto MY24,"18 mins (10%-80% charge, 800V charger)",528,16.5,[object Object],72590
+Kia EV9,Large SUV,2024 Kia EV9 Air Auto MY24,"20 mins (10%-80% charge, 350kW charger)",443,19.5,[object Object],97000
+Kia Niro BEV,Small SUV,2024 Kia Niro EV S Auto 2WD MY25,"45 mins (10%-80% charge, 100kW charger)",460,16.2,[object Object],66590
+LDV Mifa9,People Mover,2024 LDV MIFA 9 Mode Auto MY23,"36 mins (30%-80% charge, 120kW charger)",430,20.9,[object Object],104000
+LDV eDeliver7,Van,2023 LDV eDeliver 7 SWB Auto,43 mins (20%-80% charge),362,16.2,[object Object],63147
+LDV eT60,Ute (2WD),2024 LDV eT60 Auto MY23 Dual Cab,"45 mins (20%-80% charge, 80kW charger)",330,26.9,[object Object],92990
+Lexus RZ,Medium SUV,2023 Lexus RZ RZ450e Luxury Auto,390 mins,470,15.2,[object Object],121059
+Lexus UX BEV,Small SUV,2023 Lexus UX UX300e Luxury Auto FWD,"81 mins (10%-80% charge, 50kW charger)",560,12.8,[object Object],79900
+MG MG4,Small Car,2024 MG MG4 Excite 51 125kW Auto MY24,"40 mins (10%-80% charge, 50kW charger)",405,18.4,[object Object],39990
+MG ZS BEV,Small SUV,MG ZS EV Excite Auto,"54 mins (recharge to 80%, 50kW charger)",360,17.7,[object Object],42800
+MINI Countryman BEV,Small SUV,2024 MINI Countryman E Core Auto,"29 mins (recharge to 80%, 130 kW charger)",422,17.2,[object Object],64990
+MINI Hatch BEV,Small Car,2022 MINI Hatch Cooper SE Classic Auto,"36 mins (recharge to 80%, 50kW charger)",222,32.62,[object Object],34000
+Mazda MX-30 BEV,Small SUV,Mazda MX-30 E35 Astina DR Series Auto,"36 mins (recharge to 80%, 50kW charger)",224,18.5,[object Object],65490
+Mercedes-Benz EQA,Small SUV,2024 Mercedes-Benz EQA EQA250+ Auto,"47 mins (10%-80% charge, 100kW charger)",578,14.1,[object Object],84900
+Mercedes-Benz EQB,Medium SUV,2024 Mercedes-Benz EQB EQB250+ Auto,"31 mins (10%-80% charge, 200kW charger)",564,14.7,[object Object],89100
+Mercedes-Benz EQE,Large Car,2024 Mercedes-Benz EQE EQE300 Auto Sedan,31 mins,626,16.3,[object Object],133600
+Mercedes-Benz EQE SUV,Large SUV,2024 Mercedes-Benz EQE EQE300 Auto SUV,35 mins,606,17.2,[object Object],134900
+Mercedes-Benz EQS,Large Car,Mercedes-Benz EQS EQS450 Auto 4MATIC Hatch,31 mins,587,23,[object Object],194900
+Mercedes-Benz EQS SUV,Large SUV,2024 Mercedes-Benz EQS EQS450 Auto 4MATIC SUV,"47 mins (10%-80% charge, 100kW charger)",698,19.1,[object Object],195900
+Mercedes-Benz EQV,People Mover,2024 Mercedes-Benz EQV EQV300 Auto,"45 mins (10%-80% charge, 110kW charger)",418,26.3,[object Object],157450
+Mercedes-Benz eVito Tourer,People Mover,2024 Mercedes-Benz eVito Tourer 129 Medium Wheelbase Auto,"45 mins (10%-80% charge, 110kW charger)",421,26.2,[object Object],127018
+Mercedes-Benz eVito Van,Van,2024 Mercedes-Benz eVito 112 Medium Wheelbase Auto,"45 mins (10%-80% charge, 110kW charger)",262,27.36,[object Object],91051
+Nissan Leaf,Small Car,2024 Nissan LEAF ZE1 Auto MY23,"60 mins (20%-80% charge, 50kW charger)",311,17.1,[object Object],50990
+Peugeot 2008 BEV,Small SUV,2023 Peugeot e-2008 GT Auto,"30 mins (0%-80% charge, 100kW charger)",328,14.1,[object Object],59990
+Peugeot Partner BEV,Van,2024 Peugeot e-Partner Pro LWB Auto MY24,"30 mins (0%-80% charge, 100kW charger)",258,21.8,[object Object],59990
+Polestar 2,Medium Car,2024 Polestar 2 Standard range Single motor Auto MY24,"34 mins (10%-80% charge, 135kW charger)",625,19.7,[object Object],67400
+Porsche Taycan,Large Car,2024 Porsche Taycan Y1A Auto RWD MY25,"93 mins (5%-80% charge, 50kW charger)",369,28,[object Object],175100
+Renault Kangoo BEV,Van,2024 Renault Kangoo E-Tech L1 EV45 SWB Auto MY24,"360 mins (full charge, 7kW charger)",286,17.5,[object Object],61990
+Renault Megane E-Tech,Small SUV,2024 Renault Megane E-Tech Techno EV60 Auto MY24,"35 mins (15%-80% charge, 130kW charger)",454,15.6,[object Object],54990
+Rolls-Royce Spectre,Sports Car,2024 Rolls-Royce Spectre RR25 Auto AWD MY24,34 mins,555,20.5,[object Object],770000
+Subaru Solterra,Medium SUV,2024 Subaru Solterra AWD E1-1 Auto AWD MY24,"30 mins (0%-80% charge, 150kW charger)",485,14.1,[object Object],69990
+Tesla Model 3,Medium Car,2024 Tesla Model 3 Rear-Wheel Drive Auto,"15 mins (recharge to 50%, 170kW charger)",513,13.2,[object Object],54900
+Tesla Model Y,Medium SUV,2024 Tesla Model Y Rear-Wheel Drive Auto,"15 mins (recharge to 50%, 170kW charger)",510,14.6,[object Object],55900
+Toyota bZ4X,Medium SUV,2024 Toyota bZ4X Auto 2WD,40 mins (10%-80% charge),535,12.8,[object Object],66000
+Volvo C40,Small SUV,2024 Volvo C40 Recharge Auto MY24,"27 mins (10%-80% charge, 200kW charger)",445,17.5,[object Object],78990
+Volvo EX30,Small SUV,2024 Volvo EX30 Single Motor Extended Range Plus Auto MY25,"28 mins (10%-80% charge, 175kW charger)",462,17.5,[object Object],59990
+Volvo XC40 BEV,Small SUV,2024 Volvo XC40 Recharge Pure Electric Auto MY24,"27 mins (10%-80% charge, 200kW charger)",435,18.3,[object Object],76990
