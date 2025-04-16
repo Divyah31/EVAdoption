@@ -1,0 +1,220 @@
+<style>
+    /* General styles for the page */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa!important;
+        
+    }
+    
+    /* Navbar styling */
+    .custom-recommend-navbar {
+        background-color: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+        position: fixed; 
+        top: 0;
+        width: 100%;
+        height: 80px;
+        z-index: 1000;
+        display: flex;
+        align-items: left;
+        justify-content: space-between; /* Space between logo and nav items */
+        padding: 0 10px; /* Slightly reduced padding */
+    }
+
+    
+    /* Navbar brand/logo styling */
+    .custom-recommend-navbar .navbar-brand {
+        font-weight: normal;
+        color: #000;
+        font-size: 18px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Adjust the navbar container to ensure items don't overflow */
+    .custom-recommend-navbar .container {
+        max-width: 100%; /* Ensure full width of the screen is used */
+        padding: 0 10px; /* Minimize padding to maximize item space */
+    }
+    
+    /* Navigation item styling */
+    .nav-item {
+        margin-left: 3px; /* Reduced spacing to ensure items fit better */
+        margin-right: 3px; /* Consistent spacing on both sides */
+        position: relative;
+        display: inline-block;
+    }
+    
+    .nav-item .nav-link {
+        font-weight: 500; 
+        color: #555; 
+        font-size: 16px; /* Slightly reduced font size */
+        text-transform: uppercase; 
+        padding: 10px 10px; /* Minimized padding for tighter spacing */
+        transition: color 0.3s ease; 
+        display: inline-flex; 
+        align-items: center; 
+        text-decoration: none;
+        cursor: pointer; /* Show pointer cursor for clickable items */
+        text-transform: capitalize !important; 
+    }
+    
+    .nav-item .nav-link:hover {
+        color: #000;
+    }
+    
+    /* Dropdown menu styling */
+    .dropdown-menu {
+        background-color: #f8f9fa;
+        display: none; /* Initially hidden */
+        position: absolute;
+        top: 100%; /* Position directly below the nav item */
+        left: 0;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+        min-width: 200px; /* Adjusted dropdown width */
+        z-index: 999; /* Ensure it stays above other elements */
+    }
+    
+    /* Show dropdown menu on click */
+    .nav-item.open .dropdown-menu {
+        display: block; /* Show dropdown menu when the nav item has 'open' class */
+    }
+    
+    .dropdown-menu a {
+        display: block;
+        padding: 10px 15px; /* Reduced padding for a compact look */
+        color: #555;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .dropdown-menu a:hover {
+        background-color: #f0f0f0;
+        color: #000;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        margin-right:72px; 
+    }
+
+    .navbar-brand {
+        margin-left:94px; 
+    }
+
+    .navbar-brand img {
+        margin-right: 10px; /* Space between logo and text */
+    }
+
+
+    body .custom-recommend-navbar .nav-item .nav-link i.fas.fa-chevron-down {
+        margin-left: 4px !important;
+        font-size: 12px !important;
+    }
+
+    
+    
+    /* Responsive navbar adjustments */
+    @media (max-width: 992px) {
+        .custom-recommend-navbar {
+            flex-direction: column; 
+            padding: 0 20px;
+            height: auto;
+            align-items: flex-start; 
+        }
+    
+        .navbar-brand {
+            margin-bottom: 10px; 
+            font-size: 16px;
+        }
+    
+        .navbar-nav {
+            display: flex;
+            flex-direction: column; 
+            width: 100%; 
+            align-items: flex-start; 
+        }
+    
+        .nav-item {
+            margin-left: 0; 
+            text-align: left; 
+            width: 100%;
+        }
+    
+        .nav-link {
+            padding: 10px 0; 
+            text-align: left; 
+            font-size: 14px; 
+        }
+    
+        .dropdown-menu {
+            position: static; 
+            width: 100%; 
+            box-shadow: none; 
+        }
+    }
+    </style>
+    
+    <!-- Navbar HTML -->
+    <nav class="custom-recommend-navbar">
+        <a class="navbar-brand" href="/Index">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" height="50" alt="Logo">
+
+            GreenDrive Melbourne
+        </a>
+    
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/Index">Home</a></li>
+            
+            <li class="nav-item">
+                <span class="nav-link" onclick="toggleDropdown(this)">Insights and Comparisons 
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="22px" fill="#555555" class="dropdown-icon">
+                        <path d="M480-384 288-576h384L480-384Z"/>
+                    </svg>
+                </span>
+                <div class="dropdown-menu">
+                    <a href="/emissions_data">Historical Emissions</a>
+                    <a href="/EvCompare">CO2 Comparison</a>
+                    <a href="/EVCost">Price Comparison</a>
+                </div>
+            </li>
+    
+            <li class="nav-item"><a class="nav-link" href="/ev_recommend">EV Recommendation</a></li>
+            <li class="nav-item"><a class="nav-link" href="/ev_map">Smart Route Plan</a></li>
+    
+            <li class="nav-item">
+                <span class="nav-link" onclick="toggleDropdown(this)">
+                    Green Initiatives 
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="22px" fill="#555555" class="dropdown-icon">
+                        <path d="M480-384 288-576h384L480-384Z"/>
+                    </svg>
+                </span>
+                <div class="dropdown-menu">
+                    <a href="/Incentives">EV Incentives</a>
+                    <a href="/recycling_locations">EV Battery Recycling</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- JavaScript to handle dropdown toggle on click -->
+    <script>
+        function toggleDropdown(element) {
+            const parentItem = element.parentElement;
+            parentItem.classList.toggle('open');
+            
+            // Close other open dropdowns
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item !== parentItem) {
+                    item.classList.remove('open');
+                }
+            });
+        }
+    </script>
+    

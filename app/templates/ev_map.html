@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EV map</title>
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/ev_map.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .close {
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+</style>
+
+
+<body>
+
+    {% include 'navbar1.html' %}
+    
+    <!-- Hint message above the map -->
+<div id="routeHint" style="position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.9); padding: 10px 20px; border-radius: 8px; font-size: 16px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 1000;">
+    Click on the routes or charging stations for more details.
+</div>
+
+<div id="map" style="position: relative; overflow: hidden;"></div>
+    <div id="routeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRouteModal()">&times;</span>
+            <h2>Why Choose This Route?</h2>
+            <canvas id="elevationChart" style="width: 100%; height: 100px;"></canvas>
+            
+            <div id="routeDescription" style="margin-top: 20px; font-size: 16px;">
+                <ul>
+                    <li><strong>Lower Elevation Gains:</strong> Routes with fewer uphill segments tend to consume less energy, leading to increased energy savings.</li>
+                    <li><strong>Energy Regeneration:</strong> Downhill sections allow for regenerative braking, which helps conserve energy, making this route more efficient.</li>
+                </ul>               
+            </div>
+            <div id="energySavings" style="margin-top: 15px; font-size: 16px; display: flex; align-items: center;">
+                <i class="fas fa-leaf text-success mr-2" style="color: green; margin-right: 8px;"></i> 
+                <span id="energySavingValue">Calculating Energy Savings...</span>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div id="sidebar">
+        <div id="selectedVehicle" class="vehicle-select">
+            <img src="static/images/Small Car.png" alt="Small Car">
+            Small Car
+            <button onclick="openVehicleModal()" class="refresh-button">
+                ↺
+            </button>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab" onclick="switchTab('stations', event)">Stations</button>
+            <button class="tab active" onclick="switchTab('route', event)">Plan route</button>
+           <!--<button class="tab" onclick="switchTab('range', event)">Range</button>-->
+        </div>
+
+        <div id="stations" class="tab-content" style="display: none;">
+            <div class="input-container">
+                <input type="text" id="searchStations" placeholder="Search charging stations">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+                </div>
+                <div id="stationSuggestions" class="suggestions"></div>
+            </div>
+        </div>
+
+        <div id="route" class="tab-content" style="display: none;">
+            <div class="input-container">
+                <input type="text" id="startPoint" placeholder="Input Start point">
+                <div id="startSuggestions" class="suggestions"></div>
+            </div>
+            <div class="input-container">
+                <input type="text" id="destination" placeholder="Input Destination">
+                <div id="destSuggestions" class="suggestions"></div>
+            </div>
+            <div class="settings-container">
+                <div class="settings-header" onclick="toggleSettings('vehicle')">
+                    <span><i class="fas fa-car"></i> Vehicle settings</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div id="vehicleSettings" class="settings-content">
+
+                    <div class="battery-setting">
+                        <label for="batteryDeparture">Battery at departure</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="batteryDeparture" min="1" max="100" value="80" oninput="validateBatteryDeparture(this)">
+                            <span class="percentage">%</span>
+                        </div>
+                    </div>
+                    <div class="battery-setting">
+                        <label for="batteryArrival">Battery Reserved</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="batteryArrival" min="1" max="100" value="50" oninput="validateBatteryArrival(this)">
+                            <span class="percentage">%</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <button id="planRouteBtn" onclick="planRoute()">Plan route</button>
+        </div>
+
+        <div id="range" class="tab-content" style="display: none;">
+            <div class="input-container">
+                <input type="text" id="rangeAddress" placeholder="Enter address" />
+                <div id="rangeSuggestions" class="suggestions"></div>  
+            </div>
+            <button onclick="calculateRange()">Calculate Range</button>
+        </div>
+
+        <div id="routeInfoContent" style="display: none;">
+            <button id="closeRouteInfo" class="close-button">×</button>
+            <h2 id="routeTitle"></h2>
+            
+            <!-- Route selection area -->
+            
+        
+            <div id="routeInfoScroll">
+                <div id="routeBreakdown"></div>
+                
+                
+                <div style="display: flex; align-items: center; margin: 20px 0;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-right: 10px;">
+                        <i class="fas fa-chart-bar" style="font-size: 16px; color: #6495ED;"></i>
+                        <!--<span style="font-size: 14px;" style="display: none;">Graph</span> -->
+                    </div>
+                    <hr style="border: 1px solid #ddd; flex-grow: 1;">
+                </div>
+        
+                
+                <div id="elevationDetails"></div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeVehicleModal()">&times;</span>
+            <h2>Select Vehicle</h2>
+            <div id="vehicleList"></div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>The route is being generated, please wait...</p>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/ev_map.js') }}"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQp8u9oJRc7PDy_xp-2mPVPLYEgqL-DxY&libraries=places,geometry&v=weekly&callback=initMap"></script>
+    <script>
+        (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+          key: "AIzaSyAQp8u9oJRc7PDy_xp-2mPVPLYEgqL-DxY",
+          v: "weekly",
+        });
+    </script>
+      
+</body>
+</html>

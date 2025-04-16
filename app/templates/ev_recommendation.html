@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Match</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ev_recommendation.css') }}">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQp8u9oJRc7PDy_xp-2mPVPLYEgqL-DxY&libraries=places">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <!-- Include the Navbar -->
+    {% include 'navbar1.html' %}
+
+    <div class="reocommend_container">
+        <h1 style="color: #28a745;">Ready to Make the Switch? Find Your Perfect EV Match!</h1>
+        <p class="subtitle">You’ve seen the benefits—now it’s time to experience them. Let us help you find the electric vehicle that fits your <span style="color: green; font-weight: bold;">lifestyle</span>, <span style="color: green; font-weight: bold;">preferences</span>, and <span style="color: green; font-weight: bold;">budget</span>. Start exploring our top EV picks tailored just for you!</p>
+
+
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="sidebar-item active" id="sidebar-step1">
+                    <i class="fas fa-calendar-week"></i> Commute range
+                </div>
+                <div class="sidebar-item" id="sidebar-step2">
+                    <i class="fas fa-star"></i> Budget
+                </div>
+                <div class="sidebar-item" id="sidebar-step3">
+                    <i class="fas fa-dollar-sign"></i> Car preferences
+                </div>
+            </div>
+
+            <div class="main-content" id="step1-content">
+                <div class="main-content-inner">
+                    <div class="step-indicator">
+                        <div class="step active">1</div>
+                        <div class="step">2</div>
+                        <div class="step">3</div>
+                    </div>
+                    <h2>STEP 1/3</h2>
+                    <h3 style="color: #28a745; font-weight: bold;font-size: 22px">Tell us about your daily commute!</h3>
+                    <p style="color: #555; font-size: 18px;">
+                        Enter your <span style="font-weight: bold; color: #28a745;">starting point</span> and where you 
+                        <span style="font-weight: bold; color: #28a745;">travel to</span>—we’ll 
+                        <span style="font-weight: bold; color: #28a745;">calculate the distance</span> to recommend the 
+                        <span style="font-weight: bold; color: #28a745;">best EV for your needs</span>.
+                    </p>
+                    
+
+                    <div class="weekday-travel">
+                        <select id="tripType" class="select-dropdown">
+                            <option value="oneWay">One Way</option>
+                            <option value="roundTrip">Round Trip</option>
+                        </select>
+                        <div class="address-input">
+                            <input type="text" id="origin" placeholder="Enter origin address" autocomplete="off">
+                        </div>
+                        <div class="address-input">
+                            <input type="text" id="destination" placeholder="Enter destination address" autocomplete="off">
+                        </div>
+                        <button id="calculateDistance" class="btn btn-primary">Calculate Distance</button>
+                        <div id="distanceResult" style="display: none;">
+                            <p>You everyday commute distance is: <span id="calculatedDistance"></span></p>
+                        </div>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" disabled>Back</button>
+                        <button class="btn btn-primary" id="proceed-to-step2" disabled>Proceed</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step2-content" class="main-content" style="display:none;">
+                <div class="main-content-inner">
+                    <div class="step-indicator">
+                        <div class="step">1</div>
+                        <div class="step active">2</div>
+                        <div class="step">3</div>
+                    </div>
+
+
+                    <h2>STEP 2/3</h2>
+                    <h3 style="color: #28a745; font-weight: bold;font-size: 22px">How much are you looking to invest in your next EV?</h3>
+                    <p style="color: #555; font-size: 18px;">Every journey starts with a <span style="font-weight: bold; color: #28a745;">budget</span>. Let us know how much you're <span style="font-weight: bold; color: #28a745;">comfortable spending</span>, and we’ll help you find the <span style="font-weight: bold; color: #28a745;">EV</span> that fits your needs perfectly.</p>
+
+                    <div class="budget-range">
+                        <div class="budget-select">
+                            <label for="minBudget">Minimum Budget (K):</label>
+                            <select id="minBudget" name="minBudget"></select>
+                        </div>
+                        <div class="budget-select">
+                            <label for="maxBudget">Maximum Budget (K):</label>
+                            <select id="maxBudget" name="maxBudget"></select>
+                        </div>
+                    </div>
+                    <div class="budget-display">
+                        Great Choice! Your selected range is  <span id="budgetRangeDisplay"></span>
+                    </div>
+
+                    <div class="nav-buttons2">
+                        <button id="back-to-step1" class="btn btn-secondary">Back</button>
+                        <button id="proceed-to-step3" class="btn btn-primary">Proceed</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="main-content" id="step3-content" style="display:none;">
+                <div class="main-content-inner">
+                    <div class="step-indicator">
+                        <div class="step">1</div>
+                        <div class="step">2</div>
+                        <div class="step active">3</div>
+                    </div>
+
+                    <h2>STEP 3/3</h2>
+                    <h3 style="color: #28a745; font-weight: bold;font-size: 22px">What matters most to you?</h3>
+                    <p style="color: #555; font-size: 18px;"><span style="font-weight: bold; color: #28a745;">Drag and Drop</span> the options below to <span style="font-weight: bold; color: #28a745;">set your priorities</span>. 
+                    <p style="color: #555; font-size: 18px;">Think about what features will make the biggest <span style="font-weight: bold; color: #28a745;">impact on your EV experience!</span></p>
+
+                    
+
+                    <div id="preferenceList" class="preference-options">
+                        <div class="preference-option" draggable="true" data-preference="Range">
+                            <span class="preference-number">1</span>
+                            <span class="preference-text">Range</span>
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                        <div class="preference-option" draggable="true" data-preference="Efficiency">
+                            <span class="preference-number">2</span>
+                            <span class="preference-text">Efficiency</span>
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                        <div class="preference-option" draggable="true" data-preference="Fast Charge Speed">
+                            <span class="preference-number">3</span>
+                            <span class="preference-text">Fast Charge Speed</span>
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                        <div class="preference-option" draggable="true" data-preference="Price">
+                            <span class="preference-number">4</span>
+                            <span class="preference-text">Price</span>
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons3">
+                        <button id="back-to-step2" class="btn btn-secondary">Back</button>
+                        <button id="finish" class="btn btn-primary">Finish</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step4-content" class="main-content" style="display:none;">
+                <div class="main-content-inner">
+                    <h3 id="recommendationText">Personalized algorithm recommendation is in progress, please wait...</h3>
+                    <div class="spinner" id="loadingSpinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/ev_recommendation.js') }}"></script>
+</body>
+
+</html>

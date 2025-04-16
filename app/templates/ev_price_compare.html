@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution Evs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Include Bootstrap's JavaScript library -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa!important;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/static/images/cost_compare.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-custom h5 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .card-custom .cost-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin: 20px 0;
+        }
+        
+        select.form-control {
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+        
+        .mileage-input-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            height:260px;
+        }
+        
+        .metrics-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .annual-mileage, .annual-savings {
+            flex: 1;
+        }
+        
+        .annual-mileage label, .annual-savings label {
+            font-size: 1.2rem;
+            color: #212529;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .mileage-value, .savings-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .mileage-value {
+            color: #007bff;
+        }
+        
+        .savings-value {
+            color: #DAA520; 
+        }
+        
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .input-column {
+            flex: 1;
+            margin-right: 25px;
+        }
+        
+        .input-column:last-child {
+            margin-right: 0;
+        }
+        
+        .input-group {
+            margin-bottom: 10px;
+        }
+        
+        .input-group label {
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 5px;
+            display: block;
+            white-space: nowrap;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .slider-container {
+            width: 100%;
+            padding-top: 10px;
+            position: relative;
+        }
+        
+        .slider-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            left: 0; 
+            right: 0;
+            padding: 0 5px;
+        }
+        
+        .slider-scale span {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .custom-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #007bff 0%, #007bff 44%, #e0e0e0 44%, #e0e0e0 100%);
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .custom-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: transparent; 
+            border-radius: 5px;
+        }
+        
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+            box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+        
+        .custom-range::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border: 0;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+            box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+        
+        .range-value {
+            font-size: 1rem;
+            color: #495057;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        .Commute-value {
+            font-size: 1rem;
+            color: #495057;
+            margin-top: 25px;
+            display: block;
+            text-align: center;
+        }
+
+        
+        .chart-container {
+            margin-top: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            max-height: 90vh; 
+            overflow-y: auto; 
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+            .input-column {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+        
+        .chat-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: pulse 2s infinite;
+            transition: transform 0.3s ease;
+        }
+        
+        .chat-bubble:hover {
+            transform: scale(1.1);
+        }
+        
+        .chat-bubble svg {
+            width: 46px;
+            height: 46px;
+            fill: #ffffff;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 15px rgba(0, 123, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+        
+        .modal-header {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .step-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            margin-left: 22px;
+        }
+        
+        .step-button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .step-button.active {
+            background-color: #0056b3;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+
+        .piggy-bank-icon {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+          .description-container {
+            text-align: left; /* Align text to the left */
+            max-width: 1100px; /* Adjust the width to control the spread */
+            margin: 0 auto; /* Center the description block on the page */
+            margin-top: 90px;
+            margin-bottom: 40px; /* Add spacing after the description container */
+        }
+        
+        .description-container h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #28a745; /* Set your preferred color */
+            margin-bottom: 25px; /* Add space below the h2 */
+        }
+        
+        .description-container p {
+            font-size: 1.2rem;
+            line-height: 1.6; /* Adjust line height for readability */
+            color: #333; /* Adjust text color */
+            margin-top: 20px; /* Adjust space above the p tag */
+        }
+        
+        .description-container strong {
+            color: #28a745; /* Make strong text green */
+        }
+
+        select#electric-vehicle {
+     
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            -moz-appearance: none;    /* Firefox */
+            appearance: none;         /* Modern browsers */
+    
+  
+    
+  
+            border: 1px solid #ced4da;
+            padding-right: 10px;  
+            color: #6c757d;      
+        }
+    
+
+        select#electric-vehicle::-ms-expand {
+            display: none; 
+        }
+    
+   
+        select[disabled] {
+            cursor: not-allowed;
+            background-color: #e9ecef; 
+            border: 1px solid #ced4da; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include the Navbar -->
+    {% include 'navbar.html' %}
+
+    <div class="description-container">
+        <h2>Cost Comparison: Petrol vs. Electric Vehicles</h2>
+        <p>
+            Explore how the cost per kilometer differs between petrol-powered and electric vehicles, based on <strong>fuel prices</strong> and <strong>energy rates</strong>
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="step-nav">
+            <button class="step-button active" data-step="1">Step 1: Choose Vehicle</button>
+            <button class="step-button" data-step="2">Step 2: View Comparison</button>
+        </div>
+
+        <div class="step active" id="step1">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <h5>Petrol Vehicle</h5>
+                        <select id="petrol-vehicle" class="form-control">
+                            <!-- Options will be populated by JS -->
+                        </select>
+                        <div class="cost-value" id="petrol-cost">$0.00/km</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <h5>  Electric Vehicle    <i class="fas fa-charging-station" style="color: #28a745;"></i> </h5>
+                        <select id="electric-vehicle" class="form-control" disabled>
+                            <!-- Options will be populated by JS -->
+                        </select>
+                        <div class="cost-value" id="electric-cost">$0.00/km</div>
+                    </div>
+                </div>
+
+            </div>
+            <button id="nextStep" class="btn btn-primary mt-4">Next Step</button>
+        </div>
+
+        <div class="step" id="step2">
+            <div class="mileage-input-container">
+                <div class="metrics-row">
+                    <div class="annual-savings">
+                        <label for="annual-savings"><i class="fas fa-piggy-bank piggy-bank-icon"></i> You Will Save Annually (AUD)</label>
+                        
+                        <div id="annual-savings" class="savings-value">$166.40</div>
+                    </div>
+                    <div class="annual-mileage">
+                        <label for="annual-mileage">Annual Mileage (km)</label>
+                        <div id="annual-mileage" class="mileage-value">2,080</div>
+                    </div>
+                </div>
+            
+                <div class="input-row">
+                    <div class="input-column">
+                        <label for="distance">Daily Commute Distance (km)</label>
+                        <input type="number" id="distance" class="form-control" min="1" max="10000" value="20">
+                        <div class="Commute-value">Please enter daily distance</div>
+                    </div>
+                    <div class="input-column">
+                        <label for="days">Commute Days per Week (day)</label>
+                        <div class="slider-container">
+                            <input type="range" id="days" class="custom-range" min="1" max="7" value="3">
+                            <div class="slider-scale">
+                                <span>1</span>
+                                <span>2</span>
+                                <span>3</span>
+                                <span>4</span>
+                                <span>5</span>
+                                <span>6</span>
+                                <span>7</span>
+                            </div>
+                            <div class="range-value" id="days-value">3 days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        
+            <div class="chart-container">
+                <div class="card card-custom">
+                    <div id="cost-comparison-chart"></div>
+                </div>
+            </div>
+
+            <div class="next-step">
+                <h4 style="color: #4CAF50;">Ready to Find the Perfect EV for You?</h4>
+                <p>Based on your preferences, we'll help you find the electric vehicle that fits your lifestyle, needs, and budget.</p>
+                <div style="text-align: right; margin-top: 20px;">
+                <a href="/ev_recommend" class="btn btn-primary" style="background-color: #4CAF50; border-color: #4CAF50; text-align: right;">Discover Your Best EV Match</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for validation -->
+    <div id="validationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <!-- Chat bubble -->
+    <div class="chat-bubble" id="chatBubble">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223ZM8.25 10.875a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25ZM10.875 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" clip-rule="evenodd" />
+        </svg>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">CO2 Emission Calculation Method and Data Sources</div>
+            <p>On this platform, we calculate the CO2 emissions for different vehicle types through a comprehensive Life Cycle Analysis (LCA). This includes all relevant emissions throughout the entire lifecycle of the vehicle, from production to use, and finally disposal. Our calculations are based on the following key factors:</p>
+            <p><strong>Data Sources:</strong><br>
+            Our emission data primarily references authoritative sources from the Australian market, including vehicle usage survey data from the Australian Bureau of Statistics (ABS) and the Life Cycle Analysis (LCA) report from Transport & Environment. Emission factors (such as CO2 emissions per kilometer) are based on international standards, such as data from the Worldwide Harmonized Light Vehicle Test Procedure (WLTP). Although these data are standardized, we recognize that they may underestimate emissions under actual driving conditions.</p>
+            <p><strong>Fuel and Efficiency Data:</strong><br>
+            Our data covers fuel consumption and efficiency for various vehicle types in the market (including light, compact, medium, and large vehicles, as well as SUVs, vans, and utes). These data have been adjusted to reflect the actual conditions of the Australian market.</p>
+            <p><strong>Electricity Emission Data:</strong><br>
+            For Battery Electric Vehicles (BEVs), our calculations are based on the electricity generation emission factors for different states and regions of Australia, considering the energy mix of the grid (e.g., coal, natural gas, renewable energy) and transmission losses. We also provide an option to charge using 100% renewable energy (e.g., rooftop solar) to demonstrate its impact on emissions.</p>
+            <p><strong>Vehicle Life Cycle Analysis:</strong><br>
+            The emission data for each vehicle type is calculated through Life Cycle Analysis, covering the entire process from raw material extraction, vehicle and battery manufacturing, usage phase, to recycling. The battery production emissions for electric vehicles are based on leading global LCA models and assume manufacturing in China, as this aligns with the current situation in the Australian market.</p>
+            <p><strong>Conservative Modeling:</strong><br>
+            We use conservative estimation methods to ensure the model's applicability under different conditions. For example, we assume the highest emissions for electric vehicle battery production and do not account for potential future improvements in energy structures that could favor electric vehicles.</p>
+            <p><strong>Please Note:</strong><br>
+            This tool is designed to provide average estimates of lifecycle emissions for different vehicle types across various regions of Australia. It is important to note that the data presented here is representative and does not provide specific estimates of lifecycle emissions for any particular vehicle make or model.</p>
+        </div>
+    </div>
+
+    <!-- Include the footer -->
+    {% include 'footer.html' %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const electricVehicleData = {
+                'Light Electric': 0.03, 'Small Electric': 0.04, 'Medium Electric': 0.05,
+                'Large Electric': 0.06, 'Upper Large Electric': 0.07, 'Small SUV Electric': 0.05,
+                'Medium SUV Electric': 0.06, 'Large SUV Electric': 0.07, 'People Mover Electric': 0.08,
+                'Small Van Electric': 0.04, 'Large Van Electric': 0.06, 'Ute Electric': 0.08
+            };
+        
+            const petrolVehicleData = {
+                'Light Petrol': 0.11, 'Small Petrol': 0.13, 'Medium Petrol': 0.15,
+                'Large Petrol': 0.17, 'Upper Large Petrol': 0.20, 'Small SUV Petrol': 0.15,
+                'Medium SUV Petrol': 0.17, 'Large SUV Petrol': 0.20, 'People Mover Petrol': 0.22,
+                'Small Van Petrol': 0.13, 'Large Van Petrol': 0.17, 'Ute Petrol': 0.22
+            };
+        
+            const electricVehicleSelect = document.getElementById('electric-vehicle');
+            const petrolVehicleSelect = document.getElementById('petrol-vehicle');
+            const distanceInput = document.getElementById('distance');
+            const daysRange = document.getElementById('days');
+            const daysValue = document.getElementById('days-value');
+            const annualMileage = document.getElementById('annual-mileage');
+            const validationModal = document.getElementById('validationModal');
+            const modalMessage = document.getElementById('modalMessage');
+            const closeButton = document.getElementsByClassName('close-button')[0];
+            const savingsAmount = document.getElementById('annual-savings');
+        
+            function populateDropdown(selectElement, options) {
+                selectElement.innerHTML = '';
+                for (const [key, value] of Object.entries(options)) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.text = key;
+                    selectElement.add(option);
+                }
+            }
+        
+            populateDropdown(electricVehicleSelect, electricVehicleData);
+            populateDropdown(petrolVehicleSelect, petrolVehicleData);
+        
+            function updateMileage() {
+                const distance = parseInt(distanceInput.value) || 0;
+                const days = parseInt(daysRange.value);
+                const yearly = distance * days * 52;
+                annualMileage.textContent = yearly.toLocaleString();
+            }
+        
+            function updateSavings() {
+                const selectedPetrolVehicle = petrolVehicleSelect.value;
+                const selectedElectricVehicle = electricVehicleSelect.value;
+                const petrolCostPerKm = petrolVehicleData[selectedPetrolVehicle];
+                const electricCostPerKm = electricVehicleData[selectedElectricVehicle];
+                const yearlyMileage = parseInt(annualMileage.textContent.replace(/,/g, '')) || 0;
+                const petrolYearlyCost = petrolCostPerKm * yearlyMileage;
+                const electricYearlyCost = electricCostPerKm * yearlyMileage;
+                const savings = petrolYearlyCost - electricYearlyCost;
+                savingsAmount.textContent = `$${savings.toFixed(2)}`;
+            }
+        
+            function updateVehicleCosts() {
+                const electricVehicle = electricVehicleSelect.value;
+                const petrolVehicle = petrolVehicleSelect.value;
+                document.getElementById('electric-cost').textContent = `$${electricVehicleData[electricVehicle].toFixed(2)}/km`;
+                document.getElementById('petrol-cost').textContent = `$${petrolVehicleData[petrolVehicle].toFixed(2)}/km`;
+            }
+        
+            function updateChart() {
+                const electricVehicle = electricVehicleSelect.value;
+                const petrolVehicle = petrolVehicleSelect.value;
+                const yearlyMileage = parseInt(annualMileage.textContent.replace(/,/g, '')) || 0;
+                
+                const electricYearlyCost = electricVehicleData[electricVehicle] * yearlyMileage;
+                const petrolYearlyCost = petrolVehicleData[petrolVehicle] * yearlyMileage;
+        
+                Plotly.newPlot('cost-comparison-chart', [{
+                    x: ['Electric Vehicle', 'Petrol Vehicle'],
+                    y: [electricYearlyCost, petrolYearlyCost],
+                    type: 'bar',
+                    marker: {
+                        color: ['#4CAF50', '#FFC107']
+                    },
+                    text: [electricYearlyCost.toFixed(2), petrolYearlyCost.toFixed(2)],
+                    textposition: 'auto',
+                    hoverinfo: 'y', 
+                }], {
+                    title: {
+                        text: 'Annual Cost Comparison (AUD)',
+                        font: {
+                            family: 'Poppins, sans-serif',
+                            size: 16,
+                            color: '#212529'
+                        }
+                    },
+                    xaxis: { title: 'Vehicle Type' },
+                    yaxis: { title: 'Total Cost (AUD)' },
+                    bargap: 0.3,
+                }, {
+                    displayModeBar: false
+                });
+            }
+        
+            function updateAllValues() {
+                updateMileage();
+                updateSavings();
+                updateChart();
+                updateVehicleCosts();
+            }
+        
+            function updateSliderBackground(slider) {
+                const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+                slider.style.background = `linear-gradient(to right, #007bff ${value}%, #e9ecef ${value}%)`;
+            }
+        
+            function updateSlider() {
+                updateSliderBackground(this);
+                daysValue.textContent = `${this.value} days`;
+                updateAllValues();
+            }
+        
+            function validateDistance() {
+                const value = parseInt(distanceInput.value);
+                if (isNaN(value) || value < 1 || value > 10000) {
+                    showModal('Please enter a number between 1 and 10000.');
+                    distanceInput.value = ''; // Clear invalid input
+                } else {
+                    updateAllValues();
+                }
+            }
+        
+            function showModal(message) {
+                modalMessage.textContent = message;
+                validationModal.style.display = 'block';
+            }
+        
+            function initializeValues() {
+                electricVehicleSelect.value = 'Light Electric';
+                petrolVehicleSelect.value = 'Light Petrol';
+                distanceInput.value = 20;
+                daysRange.value = 3;
+                updateAllValues();
+            }
+        
+            // Event Listeners
+            distanceInput.addEventListener('blur', validateDistance);
+            distanceInput.addEventListener('input', updateAllValues);
+            daysRange.addEventListener('input', updateSlider);
+        
+            petrolVehicleSelect.addEventListener('change', function() {
+                const selectedPetrolVehicle = petrolVehicleSelect.value;
+                const correspondingElectricVehicle = selectedPetrolVehicle.replace('Petrol', 'Electric');
+                electricVehicleSelect.value = correspondingElectricVehicle;
+                updateAllValues();
+            });
+        
+            electricVehicleSelect.addEventListener('change', updateAllValues);
+        
+            closeButton.onclick = function() {
+                validationModal.style.display = 'none';
+            }
+        
+            window.onclick = function(event) {
+                if (event.target == validationModal) {
+                    validationModal.style.display = 'none';
+                }
+            }
+        
+            // Step navigation logic
+            const nextStepButton = document.getElementById('nextStep');
+            const stepButtons = document.querySelectorAll('.step-button');
+            const steps = document.querySelectorAll('.step');
+        
+            nextStepButton.addEventListener('click', function() {
+                steps[0].classList.remove('active');
+                steps[1].classList.add('active');
+                stepButtons[0].classList.remove('active');
+                stepButtons[1].classList.add('active');
+                updateAllValues();
+            });
+        
+            stepButtons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    steps.forEach(step => step.classList.remove('active'));
+                    stepButtons.forEach(btn => btn.classList.remove('active'));
+                    steps[index].classList.add('active');
+                    this.classList.add('active');
+                    if (index === 1) {
+                        updateAllValues();
+                    }
+                });
+            });
+        
+            // Chat bubble and modal logic
+            const chatBubble = document.getElementById('chatBubble');
+            const myModal = document.getElementById('myModal');
+            const modalClose = document.getElementsByClassName('close')[0];
+        
+            chatBubble.onclick = function() {
+                myModal.style.display = "block";
+            }
+        
+            modalClose.onclick = function() {
+                myModal.style.display = "none";
+            }
+        
+            window.onclick = function(event) {
+                if (event.target == myModal) {
+                    myModal.style.display = "none";
+                }
+            }
+        
+            // Initialize
+            initializeValues();
+            updateSliderBackground(daysRange);
+            updateSlider.call(daysRange);
+        });
+        </script>
+        
+</body>
+</html>

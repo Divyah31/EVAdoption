@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution Evs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa!important;
+        }
+        
+        .description-container {
+            text-align: left;
+            max-width: 1100px;
+            margin: 0 auto;
+            margin-top: 90px;
+            margin-bottom: 40px;
+        }
+        
+        .description-container h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 25px;
+        }
+        
+        .description-container p {
+            font-size: 1.2rem;
+            line-height: 1.4;
+            color: #333;
+            margin-top: 20px;
+        }
+        
+        .description-container strong {
+            color: #28a745;
+        }
+
+        /* CTA Styles */
+        .cta-container {
+            display: flex;
+            flex-wrap: wrap; /* Enable wrapping */
+            justify-content: space-between;
+            max-width: 1100px;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .cta-box {
+            flex: 1 1 30%; /* Allow the boxes to grow and shrink */
+            margin: 10px; /* Margin for spacing */
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            min-width: 220px; /* Minimum width for smaller devices */
+
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items horizontally */
+            justify-content: space-between; /* Space out items evenly */
+        }
+        
+
+        .cta-box:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .cta-box img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .cta-box h3 {
+            font-size: 18px;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .cta-box button {
+            background-color: #f1c40f; /* Softer, golden yellow */
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 10px 30px;
+            width: 90%; /* Ensures all buttons have the same width */
+            max-width: 200px; /* Optional: You can adjust this width */
+            margin: 0 auto;
+        }
+
+        .cta-box button:hover {
+            background-color: #f1b800;
+        }
+        .pac-container {
+          z-index: 1050 !important; /* Adjust this number if needed */
+      }
+     
+    
+      /* Map and List Styles */
+        #map {
+            height: 300px; /* Reduced height for the map */
+            width: 100%; /* Full width */
+        }
+
+        .map-container {
+            display: flex;
+            flex-direction: row; /* Align children in a row */
+            gap: 20px; /* Space between map and list */
+        }
+
+        #locationList {
+          max-width: 400px; /* Set a maximum width for the list */
+          overflow-y: auto; /* Enable vertical scrolling */
+          max-height: 300px; /* Set maximum height to match the map */
+          border: 1px solid #ddd; /* Add a border */
+          border-radius: 10px; /* Rounded corners */
+          padding: 10px; /* Padding inside the list */
+          background-color: #fff; /* Background color for the list */
+      }
+      
+      .location-item {
+          margin-bottom: 10px; /* Space between items */
+          padding: 5px; /* Padding for each item */
+          border-bottom: 1px solid #ddd; /* Separator line */
+      }
+      
+      .location-item:last-child {
+          border-bottom: none; /* Remove border from the last item */
+      }
+      
+      .location-item h4 {
+          margin: 0; /* Remove default margin */
+          font-size: 16px; /* Adjust the title font size */
+      }
+      
+      .location-item p {
+          margin: 5px 0; /* Space above and below distance */
+          font-size: 14px; /* Adjust the font size for distance */
+      }
+      
+      .location-item a {
+          color: #28a745; /* Link color */
+          text-decoration: none; /* No underline */
+          font-size: 12px; /* Smaller font size for links */
+          margin-top: 5px; /* Space above directions link */
+          display: block; /* Make the link a block element for better spacing */
+      }
+      
+      .location-item a:hover {
+          text-decoration: underline; /* Underline on hover */
+      }
+     
+      /* Search Form Styles */
+      #searchForm {
+          margin-bottom: 20px; /* Space below the form */
+      }
+      
+      /* Flexbox container for input, select, and button */
+      #searchForm div {
+          display: flex; /* Use flexbox */
+          align-items: center; /* Center items vertically */
+          gap: 10px; /* Space between elements */
+          flex-wrap: nowrap; /* Prevent wrapping */
+      }
+      
+      /* Input Field Styles */
+      #location {
+          padding: 8px; /* Adjust padding */
+          border: 1px solid #28a745; /* Green border color */
+          border-radius: 5px; /* Rounded corners */
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+          font-size: 14px; /* Font size */
+          max-width: 500px; /* Set a maximum width */
+      }
+      
+      /* Select Field Styles */
+      #radius {
+          padding: 8px; /* Adjust padding */
+          border: 1px solid #28a745; /* Green border color */
+          border-radius: 5px; /* Rounded corners */
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+          font-size: 14px; /* Font size */
+      }
+      
+      /* Search Button Styles */
+      #searchBtn {
+          background-color: #28a745; /* Green background */
+          color: white; /* White text */
+          border: none; /* No border */
+          border-radius: 5px; /* Rounded corners */
+          padding: 10px 12px; /* Adjust padding */
+          font-size: 14px; /* Adjust font size */
+          cursor: pointer; /* Pointer cursor on hover */
+          transition: background-color 0.3s; /* Smooth background transition */
+      }
+      
+      #searchBtn:hover {
+          background-color: #218838; /* Darker green on hover */
+      }
+      .highlight {
+        background-color: #d4edda; /* Light green background */
+        border-left: 5px solid #28a745; /* Green left border */
+    }
+    .btn-close {
+      background: none; /* Remove background */
+      border: none; /* Remove border */
+      padding: 0; /* Remove padding */
+      font-size: 1.5rem; /* Adjust font size as needed */
+      color: #000; /* Change the color of the 'x' as needed */
+  }
+    
+  /* Flip Card Container */
+.flip-card-container {
+    display: flex;
+    justify-content: space-between; /* Ensure even spacing between cards */
+    align-items: center; /* Center the cards vertically */
+    gap: 20px; /* Adjust the gap between cards */
+    margin-top: 20px;
+    padding: 10px; /* Add some padding to the container */
+}
+
+/* Flip Card Styles */
+.flip-card {
+    width: 220px; /* Fixed width for consistency */
+    height: 320px; /* Increased height for better image display */
+    perspective: 1000px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Softer shadow for better depth */
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out; /* Smooth scaling transition */
+}
+
+.flip-card:hover {
+    transform: scale(1.05); /* Subtle zoom effect on hover */
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+/* Card Face Styles */
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Space out the content */
+    align-items: center;
+    padding: 15px;
+    border-radius: 12px; /* Rounded corners */
+}
+
+/* Front of the card */
+.flip-card-front {
+    background-color: #ffffff; /* White background for a clean look */
+    border: 1px solid #e0e0e0; /* Light grey border for a soft outline */
+}
+
+/* Back of the card */
+.flip-card-back {
+    background-color: #ffffff; /* Matching green color */
+    color: white;
+    transform: rotateY(180deg);
+    border: 3px solid #218838; /* Slightly darker green border */
+}
+
+/* Image Style */
+.flip-card img {
+    width: 100px; /* Larger image size */
+    height: 500px;
+    margin-bottom: 10px; /* Space between image and text */
+}
+
+/* Flip Buttons Styles */
+.flip-btn, .flip-back-btn {
+    background-color: #f1c40f; /* Yellow color for the button */
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px; /* Smaller font size for the button */
+    cursor: pointer;
+    padding: 8px 16px; /* Smaller padding for a more compact look */
+    margin-top: 5px;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.flip-btn:hover, .flip-back-btn:hover {
+    background-color: #e2b007; /* Darker yellow on hover */
+}
+
+/* Text Styles */
+.flip-card h3 {
+    font-size: 16px; /* Smaller heading size */
+    font-weight: 600; /* Slightly bolder for emphasis */
+    color: #333; /* Darker color for readability */
+    margin-bottom: 5px; /* Less space below the heading */
+}
+
+/* Flip Card Text Styles */
+.flip-card p {
+    font-size: 16px; /* Slightly larger font size */
+    line-height: 1.5; /* Increase line spacing for better readability */
+    color: #333; /* Darker text color for contrast */
+    text-align: center; /* Centered text for a clean look */
+}
+
+/* Recycling Info Section */
+.recycling-info h4 {
+    font-weight: 600;
+    color: #28a745; /* Green color for the question */
+    margin-bottom: 10px; /* Space below the heading */
+}
+
+.image-container {
+    width: 100%;
+    height: 500px; /* Maintain a consistent height */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#dynamicImage {
+    width: 100%; /* Full size of the container */
+    height: auto;
+    transform: scale(3); /* Initial zoom level */
+    transition: transform 0.5s ease; /* Smooth zoom-out transition */
+}
+
+/* Styled Modal Container */
+.styled-modal {
+    position: absolute; /* Changed to absolute to position it relative to the hovered item */
+    background-color: #ffffff;
+    padding: 20px 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    z-index: 1000;
+    display: none; /* Hide the modal by default */
+    border: 2px solid #2a9d8f; /* Optional border for emphasis */
+    transform: none; /* No movement for stability */
+    transition: none; /* Disable transition to prevent shaking */
+    
+}
+
+
+      
+    </style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+
+  <div class="description-container">
+    <h2>Your Battery’s Journey Isn’t Over</h2>
+    <p>Have you ever wondered what happens to your car battery once it reaches the <strong>end of its life?</strong></p>
+    <p><strong>Your next steps can truly benefit the environment</strong>. By choosing to <strong>recycle</strong>, you help prevent waste and recover valuable materials, contributing to a more <strong>sustainable future</strong>.</p>
+    <p>Discover <strong>nearby drop-off locations</strong> and use our <strong>Battery Recycling Calculator</strong> to see your impact on a sustainable future.</p>
+  </div>
+  
+  <!-- CTA Section -->
+  <div class="cta-container">
+    <div class="cta-box">
+        <img src="{{ url_for('static', filename='images/cta1.png') }}" alt="Why Recycle Icon" style="height: 100px;">
+        <h3>Recycling Benefits and Process</h3>
+        <button id="learnMoreButton">Learn More</button>
+
+    </div>
+
+    <div class="cta-box">
+      <img src="{{ url_for('static', filename='images/cta2.png') }}" alt="Find Recycling Center Icon" style="height: 100px;">
+      <h3>Find Battery Drop Off Location</h3>
+      <button data-bs-toggle="modal" data-bs-target="#recyclingModal">Find Now</button>
+  </div>
+  
+    <div class="cta-box">
+        <img src="{{ url_for('static', filename='images/cta3.png') }}" alt="Recycling Calculator Icon" style="height: 100px;">
+        <h3>Battery Recycling Calculator</h3>
+        <button data-bs-toggle="modal" data-bs-target="#impactModal">Know Your Impact</button>
+    </div>
+  </div>
+
+  <!-- Simple Modal -->
+  <div class="modal fade" id="recyclingModal" aria-labelledby="recyclingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recyclingModalLabel">Find Battery Drop Off Locations</h5>
+                <button type="button" class="btn-close" aria-label="Close" id="closeModalBtn">
+                  &times;
+                </button>
+            </div>
+            <div class="modal-body">
+              <div id="searchForm">
+               
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: nowrap;"> <!-- Flexbox container -->
+                  <label for="location">Your Location:</label>
+                    <input type="text" id="location" placeholder="Enter your location" autocomplete="off" style="flex: 1;">
+                    <label for="radius" style="margin: 0;">Search Radius (km):</label>
+                    <select id="radius">
+                        <option value="10" selected>10 km</option>
+                        <option value="25">25 km</option>
+                        <option value="50">50 km</option>
+                    </select>
+                    <button id="searchBtn">Search</button>
+                </div>
+            </div>
+            
+            
+                 <!-- Map and Location List -->
+                 <div class="map-container">
+                  <div id="map"></div>
+                  <div id="locationList"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+ <!-- Impact Modal -->
+<div class="modal fade" id="impactModal" aria-labelledby="impactModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="impactModalLabel">Know Your Impact</h5>
+              <button type="button" class="btn-close" aria-label="Close" id="closeImpactModalBtn">
+                &times;
+              </button>
+             
+          </div>
+          <div class="modal-body" style="display: flex; align-items: flex-start;">
+              <div style="flex: 0 0 40%; padding-right: 20px;">
+                  <label for="weightInput" style="font-weight: bold; margin-bottom: 10px;">Enter the weight of batteries to be recycled (in kg):</label>
+                  <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                      <input type="number" id="weightInput" placeholder="e.g. 10" style="border-radius: 5px; padding: 10px; width: 200px;margin-right: 10px;">
+                      <button id="calculateImpactBtn" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Calculate Impact</button>
+                  </div>
+                  <h6 style="margin-top: 20px;">Impact Calculations:</h6>
+                  <!-- Impact Results List -->
+                    <ul id="impactResults" style="list-style-type: none; padding: 0;">
+                        <li class="impact-item" data-info="global-warming" style="margin-bottom: 10px;">
+                            <img src="{{ url_for('static', filename='images/optn1.png') }}" alt="Global Warming" style="width: 30px; height: 40px; vertical-align: middle; margin-right: 10px;">
+                            <span style="font-weight: bold; color: #28a745;">Global Warming:</span> <span id="globalWarmingImpact">0</span> kg CO2-eq
+                        </li>
+                        <li class="impact-item" data-info="fossil-energy-demand" style="margin-bottom: 10px;">
+                            <img src="{{ url_for('static', filename='images/optn2.png') }}" alt="Fossil Energy Demand" style="width: 30px; height: 40px; vertical-align: middle; margin-right: 10px;">
+                            <span style="font-weight: bold; color: #28a745;">Fossil Energy Demand:</span> <span id="fossilEnergyImpact">0</span> MJ
+                        </li>
+                        <li class="impact-item" data-info="water-scarcity" style="margin-bottom: 10px;">
+                            <img src="{{ url_for('static', filename='images/optn3.png') }}" alt="Water Scarcity" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 10px;">
+                            <span style="font-weight: bold; color: #28a745;">Water Scarcity:</span> <span id="waterScarcityImpact">0</span> litres-eq
+                        </li>
+                        <li class="impact-item" data-info="particulate-matter" style="margin-bottom: 10px;">
+                            <img src="{{ url_for('static', filename='images/optn4.png') }}" alt="Particulate Matter" style="width: 30px; height: 40px; vertical-align: middle; margin-right: 10px;">
+                            <span style="font-weight: bold; color: #28a745;">Particulate Matter:</span> <span id="particulateMatterImpact">0</span> g PM2.5-eq
+                        </li>
+                    </ul>
+
+                   <!-- Modal Structure -->
+                    <div id="infoModal" class="styled-modal" style="display: none;">
+                        <div class="modal-content">
+                            <span class="close-button" onclick="closeModal()">&times;</span>
+                            <div class="modal-header">
+                                <img id="modalIcon" src="" alt="Impact Icon" style="width: 50px; height: 50px; margin-right: 15px;">
+                                <h3 id="modalTitle" style="display: inline-block; color: #2a9d8f;"></h3>
+                            </div>
+                            <div class="modal-description">
+                                <p id="modalDescription"></p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                  <!-- Environmental Benefits Section -->
+                  <!-- Environmental Benefits Section -->
+                  <div style="margin-top: 20px; text-align: center; padding: 10px; border-top: 2px solid #28a745; border-bottom: 2px solid #28a745;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="{{ url_for('static', filename='images/tree.png') }}" alt="Tree Icon" style="width: 30px; height: 30px;">
+                        <span style="font-weight: bold; color: #28a745;">Environmental benefits equivalent:</span>
+                        <img src="{{ url_for('static', filename='images/tree.png') }}" alt="Tree Icon" style="width: 30px; height: 30px;">
+                    </div>
+                    <span style="font-size: 24px; font-weight: bold; color: #28a745;" id="treeBenefitImpact">0</span> Trees Planted
+                  </div>
+
+              </div>
+              <div class="image-container">
+                <img id="dynamicImage" src="{{ url_for('static', filename='images/illus.png') }}" alt="Nature Image">
+            </div>
+            
+                      
+            
+          </div>
+          
+      </div>
+  </div>
+</div>
+
+<!-- Learn More Modal with Flip Cards -->
+<div class="modal fade" id="learnMoreModal" tabindex="-1" aria-labelledby="learnMoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="learnMoreModalLabel">Recycling Benefits and Process</h5>
+                <button type="button" class="btn-close" aria-label="Close" id="closeLearnModalBtn">
+                    &times;
+                  </button>
+            </div>
+            <div class="modal-body">
+                <div class="recycling-info">
+                    <h4>Why recycle your old car battery?</h4>
+                    <p>Car batteries contain <strong>hazardous</strong> materials like <strong>lead</strong> and <strong>sulfuric acid</strong>, which can harm the environment if not disposed of properly.<p> 
+                        <p>Thankfully, about <span style="color: #28a745; font-weight: bold;">97%</span> of a lead-acid battery's materials can be <span style="color: #28a745; font-weight: bold;">recycled</span> and used in new products. <span style="color: #28a745; font-weight: bold;">Responsible recycling</span> ensures these toxic components are safely processed, giving them a <span style="color: #28a745; font-weight: bold;">second life</span> while protecting the environment.</p>
+                </div>
+
+                <div class="flip-card-container">
+                    <!-- Collection Card -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3>Stage 1</h3>
+                                <img src="{{ url_for('static', filename='images/stage1.png') }}" alt="Collection Image" style="width: 150px; height: 150px;">
+                                <button class="flip-btn">Collection</button>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>Batteries are <strong>collected</strong> from <strong>drop-off points</strong> to prevent hazardous materials from entering the environment.</p>
+                                <button class="flip-back-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breaking Down Card -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3>Stage 2</h3>
+                                <img src="{{ url_for('static', filename='images/stage2.png') }}" alt="Breaking Down Image" style="width: 170px; height: 170px;">
+                                <button class="flip-btn">Breaking Down</button>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>Batteries are <strong>dismantled</strong> into components like <strong>lead, plastic, and sulphuric acid</strong> for further processing.</p>
+                                <button class="flip-back-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extraction Card -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3>Stage 3</h3>
+                                <img src="{{ url_for('static', filename='images/stage3.png') }}" alt="Extraction Image" style="width: 170px; height: 170px;">
+                                <button class="flip-btn">Extraction</button>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>Valuable materials like <strong>lead and plastic</strong> are <strong>extracted and purified</strong> for reuse.</p>
+                                <button class="flip-back-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reuse Card -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3>Stage 4</h3>
+                                <img src="{{ url_for('static', filename='images/stage4.png') }}" alt="Reuse Image" style="width: 170px; height: 170px;">
+                                <button class="flip-btn">Reuse</button>
+                            </div>
+                            <div class="flip-card-back">
+                                <p>Recycled materials are used to create <strong>new products</strong> like <strong>batteries</strong>, as well as items such as <strong>glass, textiles, detergents, fertilizers, and plant pots</strong>, reducing the need for new resources.</p>
+                                <button class="flip-back-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+  {% include 'footer.html' %}
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQp8u9oJRc7PDy_xp-2mPVPLYEgqL-DxY&libraries=places"></script>
+
+  <script>
+    let map;
+    let markers = [];
+    let directionsService;
+    let directionsRenderer;
+    let userMarker = null;  
+    let userLatLng = null;  
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+          center: { lat: -37.8136, lng: 144.9631 },
+          zoom: 11 // Adjusted zoom level
+      });
+  
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+      initAutocomplete();
+      searchLocations(-37.8136, 144.9631, 10);
+  }
+
+    function initAutocomplete() {
+        const locationInput = document.getElementById('location');
+        const autocomplete = new google.maps.places.Autocomplete(locationInput, {
+            componentRestrictions: { country: 'au' }
+        });
+    }
+
+    function searchLocations(lat, lng, radius) {
+      userLatLng = { lat, lng };  
+      map.setCenter(userLatLng); // Center the map on the user location
+      clearMarkers(); // Clear previous markers
+  
+      // Adjust zoom level based on radius
+      if (radius == 10) {
+          map.setZoom(11); // Zoom level for 10 km
+      } else if (radius == 25) {
+          map.setZoom(10); // Zoom level for 25 km
+      } else if (radius == 50) {
+          map.setZoom(9); // Zoom level for 50 km
+      }
+  
+      fetch(`/api/recycling_locations?lat=${lat}&lng=${lng}&radius=${radius}`)
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById('locationList').innerHTML = ''; // Clear the list
+              data.forEach((location, index) => {
+                  const lat = parseFloat(location.latitude);
+                  const lng = parseFloat(location.longitude);
+                  const name = location.name;
+                  const distance = location.distance.toFixed(2);
+                  if (!isNaN(lat) && !isNaN(lng)) {
+                      const marker = new google.maps.Marker({
+                          position: { lat: lat, lng: lng },
+                          map: map,
+                          title: name
+                      });
+                      markers.push(marker);
+                      const infowindow = new google.maps.InfoWindow({
+                          content: `<div style="font-size: 14px; line-height: 1.2;">
+                                       <strong>${name}</strong><br>
+                                       Distance: ${distance} km away
+                                    </div>`,
+                          maxWidth: 200 // Set a maximum width for the InfoWindow
+                      });
+                      marker.addListener('click', function () {
+                          // Highlight the corresponding location item in the list
+                          document.querySelectorAll('.location-item').forEach(item => item.classList.remove('highlight'));
+                          const locationItemElement = document.getElementById(`location-${index}`);
+                          locationItemElement.classList.add('highlight');
+  
+                          // Scroll the highlighted item into view
+                          locationItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+                          // Open the InfoWindow
+                          infowindow.open(map, marker);
+                      });
+                      const locationItem = `
+                          <div class="location-item" id="location-${index}">
+                              <h4>${name}</h4>
+                              <p>${distance} km away</p>
+                              <a href="#" onclick="calculateRoute(${lat}, ${lng}); return false;">Directions</a>
+                          </div>
+                      `;
+                      document.getElementById('locationList').insertAdjacentHTML('beforeend', locationItem);
+                  }
+              });
+          })
+          .catch(error => console.error('Error fetching locations:', error));
+  }
+  
+  
+
+    function calculateRoute(destinationLat, destinationLng) {
+        if (!userLatLng) {
+            alert("Please search for a location first.");
+            return;
+        }
+        const origin = userLatLng;  
+        const request = {
+            origin: origin,
+            destination: { lat: destinationLat, lng: destinationLng },
+            travelMode: 'DRIVING'
+        };
+        directionsService.route(request, function (result, status) {
+            if (status == 'OK') {
+                directionsRenderer.setDirections(result);  
+            } else {
+                console.error('Directions request failed due to ' + status);
+            }
+        });
+    }
+
+    function clearMarkers() {
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const closeModalFooterBtn = document.getElementById("closeModalFooterBtn");
+
+      // Close modal using Bootstrap's method
+      closeModalBtn.addEventListener("click", function() {
+          $('#recyclingModal').modal('hide'); // Hide the modal
+      });
+
+      closeModalFooterBtn.addEventListener("click", function() {
+          $('#recyclingModal').modal('hide'); // Hide the modal
+      });
+  });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const findNowButton = document.querySelector('.cta-box button[data-bs-target="#recyclingModal"]');
+        const locationInput = document.getElementById("location"); 
+        const searchBtn = document.getElementById("searchBtn");
+
+        // Show the modal when the 'Find Now' button is clicked
+        findNowButton.addEventListener('click', function() {
+            $('#recyclingModal').modal('show'); // Show the modal
+            initMap(); // Initialize the map
+        });
+
+        // Handle the search button click
+      searchBtn.addEventListener("click", function() {
+        const location = locationInput.value.trim(); // Get the input and trim whitespace
+        const radius = document.getElementById("radius").value; // Get the selected radius
+
+        const geocoder = new google.maps.Geocoder();
+
+        if (location) {
+            // If a location is entered, geocode it
+            geocoder.geocode({ 'address': location }, function(results, status) {
+                if (status === 'OK') {
+                    const userLocation = results[0].geometry.location;
+                    map.setCenter(userLocation); // Center the map on the user's location
+                    searchLocations(userLocation.lat(), userLocation.lng(), radius); // Fetch locations
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        } else {
+            // If no location is entered, use the default location
+            const defaultLat = -37.8136; // Default latitude for Melbourne
+            const defaultLng = 144.9631; // Default longitude for Melbourne
+
+            map.setCenter({ lat: defaultLat, lng: defaultLng }); // Center the map on Melbourne
+            searchLocations(defaultLat, defaultLng, radius); // Fetch locations based on the default location
+        }
+      });
+
+    });
+
+    window.onload = initMap;
+
+        // Open Impact Modal when 'Calculate Now' button is clicked
+        const calculateNowButton = document.querySelector('.cta-box button[data-bs-target="#impactModal"]');
+
+        calculateNowButton.addEventListener('click', function() {
+            $('#impactModal').modal('show'); // Show the impact modal
+        });
+
+        // Close Impact Modal
+        const closeImpactModalBtn = document.getElementById("closeImpactModalBtn");
+        //const closeImpactModalFooterBtn = document.getElementById("closeImpactModalFooterBtn");
+
+        // Close modal using Bootstrap's method
+        closeImpactModalBtn.addEventListener("click", function() {
+            $('#impactModal').modal('hide'); // Hide the modal
+        });
+
+
+
+// Calculate impact when the Calculate Impact button is clicked
+document.getElementById("calculateImpactBtn").addEventListener("click", function() {
+    const weightInput = document.getElementById("weightInput").value; // Get the input value
+    const weight = parseFloat(weightInput); // Parse the input value
+
+    // Check if the weight is a valid number and greater than zero
+    if (isNaN(weight) || weight <= 0) {
+        alert("Please enter a valid weight greater than zero.");
+        return; // Exit if input is invalid
+    }
+
+    // Set boundaries for the zoom level
+    const maxZoomOut = 0.8; // Fully zoomed out (original size)
+    const minZoomIn = 3; // Maximum zoom in level (start fully zoomed in)
+    
+    // Calculate the zoom level based on the weight
+    // For higher weights, we make sure the zoom level gradually reaches maxZoomOut
+    const zoomLevel = Math.max(maxZoomOut, minZoomIn - (weight / 500)); 
+
+    // Update the image scale dynamically to reflect the zoom level
+    document.getElementById("dynamicImage").style.transform = `scale(${zoomLevel})`;;
+
+    // Assuming you have formulas for calculating impacts
+    const globalWarming = (weight * -0.157); // Example formula
+    const fossilEnergy = (weight * -0.623); // Example formula
+    const particulateMatter = (weight * -0.136); // Example formula
+    const waterScarcity = (weight * -0.184); // Example formula
+    const treesPlanted = (weight * 0.003); // Example formula for trees planted
+
+    // Update the modal with results
+    document.getElementById("globalWarmingImpact").innerText = globalWarming.toFixed(2);
+    document.getElementById("fossilEnergyImpact").innerText = fossilEnergy.toFixed(2);
+    document.getElementById("particulateMatterImpact").innerText = particulateMatter.toFixed(2);
+    document.getElementById("waterScarcityImpact").innerText = waterScarcity.toFixed(2);
+    document.getElementById("treeBenefitImpact").innerText = treesPlanted.toFixed(2); // Update trees planted
+
+    
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Learn more button functionality
+    const learnMoreButton = document.getElementById("learnMoreButton");
+    const learnMoreModal = new bootstrap.Modal(document.getElementById("learnMoreModal"));
+
+    if (learnMoreButton) {
+        learnMoreButton.addEventListener("click", function() {
+            learnMoreModal.show(); // Show the modal using Bootstrap's JavaScript API
+        });
+    }
+
+    // Flip card functionality
+    const flipButtons = document.querySelectorAll('.flip-btn');
+    const flipBackButtons = document.querySelectorAll('.flip-back-btn');
+
+    flipButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.flip-card');
+            card.querySelector('.flip-card-inner').style.transform = 'rotateY(180deg)';
+        });
+    });
+
+    flipBackButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.flip-card');
+            card.querySelector('.flip-card-inner').style.transform = 'rotateY(0deg)';
+        });
+    });
+
+    // Close button functionality for the modal
+    const closeLearnModalBtn = document.getElementById("closeLearnModalBtn");
+    if (closeLearnModalBtn) {
+        closeLearnModalBtn.addEventListener("click", function() {
+            learnMoreModal.hide(); // Close the modal using Bootstrap's JavaScript API
+        });
+    }
+});
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Data for the impact information
+    const impactData = {
+        "global-warming": {
+            title: "Global Warming",
+            description: "Global warming is measured in carbon dioxide equivalence (CO2-eq). It is defined as the change in global temperatures caused by the emissions of greenhouse gases from human activity. By reducing emissions, we help avoid the effects of climate change.",
+            icon: "{{ url_for('static', filename='images/optn1.png') }}"
+        },
+        "fossil-energy-demand": {
+            title: "Fossil Energy Demand",
+            description: "Measured in megajoules (MJ).Fossil energy demand measures the energy from burning fossil fuels like coal, oil, and natural gas, powering industries and daily needs. Reducing its use lowers greenhouse gas emissions and conserves resources.",
+            icon: "{{ url_for('static', filename='images/optn2.png') }}"
+        },
+        "water-scarcity": {
+            title: "Water Scarcity",
+            description: "Water scarcity is measured in litres of water equivalence (litre-eq). Reducing water consumption eases the strain on resources, supporting both communities and ecosystems. Through sustainable actions, we can help preserve this essential resource for future needs.",
+            icon: "{{ url_for('static', filename='images/optn3.png') }}"
+        },
+        "particulate-matter": {
+            title: "Particulate Matter",
+            description: "Measured in particulate matter of a size below or equal to 2.5 microns equivalence (PM2.5-eq).Particulate matter (PM) consists of tiny airborne particles that can harm respiratory health and increase the risk of lung and heart diseases. Reducing PM emissions improves air quality and protects human health.",
+            icon: "{{ url_for('static', filename='images/optn4.png') }}"
+        }
+    };
+
+    // Event listener to handle hover on each impact item
+    document.querySelectorAll('.impact-item').forEach(item => {
+        item.addEventListener('mouseenter', function () {
+            const impactKey = this.getAttribute('data-info');
+            openModal(impactData[impactKey], item); // Pass the item element to position the modal
+        });
+        item.addEventListener('mouseleave', function () {
+            closeModal();
+        });
+    });
+
+    // Function to open the modal with the appropriate content and position it near the hovered item
+    function openModal(data, item) {
+        const modal = document.getElementById('infoModal');
+        const rect = item.getBoundingClientRect(); // Get the position of the hovered item
+
+        if (data.icon) { // Check if the icon exists before setting the src attribute
+            document.getElementById('modalIcon').src = data.icon; // Set the icon for the modal
+        }
+        document.getElementById('modalTitle').innerText = data.title;
+        document.getElementById('modalDescription').innerText = data.description;
+
+        // Set a fixed position for the modal to prevent any movement
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)'; // Center the modal
+    modal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        document.getElementById('infoModal').style.display = 'none';
+    }
+});
+
+  </script>
+
+</body>
+</html>

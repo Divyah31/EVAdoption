@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution Evs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- Include Bootstrap's JavaScript library -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa!important;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/static/images/co2_compare.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            font-size: 1.5rem;
+        }
+        .card-custom {
+            background-color: #FFFFFF !important; 
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-custom h5 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .card-custom .emission-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin: 20px 0;
+        }
+
+        .slider-container {
+            z-index: 10;
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+            height:150px;
+        }
+        
+        .slider-item {
+            margin-bottom: 10px;
+        }
+        
+        .slider-item label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #1D242A;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .custom-range {
+            z-index: 11;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #007bff 0%, #007bff 44%, #e0e0e0 44%, #e0e0e0 100%);
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .custom-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: transparent;
+            border-radius: 5px;
+        }
+        
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+            box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+        
+        .custom-range::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border: 0;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+            box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+        
+        .slider-item .slider-value {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .slider-item .tick-marks {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .row {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .col-md-8 {
+            flex: 0 0 66.666667%;
+            max-width: 66.666667%;
+            padding-right: 15px;
+        }
+        
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding-left: 15px;
+            margin-bottom: 5px;
+        }
+
+        .chart-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            flex: 1;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        .container.mt-5 h2 {
+            margin-bottom: 1rem;
+        }
+
+        .container.mt-5 h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: #212529;
+            margin: 0 0 12px 0;
+        }
+        
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .card-body {
+            padding: 1.2rem;
+        }
+        
+        .card-title {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        #total-emissions {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 0;
+        }
+        
+        #emissions-by-type {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        #emissions-by-type .emission-type {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;  
+        }
+        
+        #emissions-by-type .emission-label {
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        #emissions-by-type .emission-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-left: 10px;  
+        }
+        
+        #emissions-by-type .emission-type:nth-child(1) .emission-value {
+            color: #4CAF50;
+        }
+        
+        #emissions-by-type .emission-type:nth-child(2) .emission-value {
+            color: #FFA000;
+        }
+
+        .chat-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: pulse 2s infinite;
+            transition: transform 0.3s ease;
+        }
+        
+        .chat-bubble:hover {
+            transform: scale(1.1);
+        }
+        
+        .chat-bubble svg {
+            width: 46px;
+            height: 46px;
+            fill: #ffffff;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 15px rgba(0, 123, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            max-height: 90vh; 
+            overflow-y: auto; 
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            z-index: 1001;
+        }
+
+        .modal-header {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .step-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            margin-left: 24px;
+        }
+        
+        .step-button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .step-button.active {
+            background-color: #0056b3;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+
+        .emission-reduction {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .emission-reduction .fa-leaf {
+            font-size: 2.5rem;
+            vertical-align: middle;
+        }
+        #emission-reduction-amount {
+            vertical-align: middle;
+        }
+
+        .description-container {
+            text-align: left; /* Align text to the left */
+            max-width: 1100px; /* Adjust the width to control the spread */
+            margin: 0 auto; /* Center the description block on the page */
+            margin-top: 90px;
+            margin-bottom: 40px; /* Add spacing after the description container */
+        }
+        
+        .description-container h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #28a745; /* Set your preferred color */
+            margin-bottom: 25px; /* Add space below the h2 */
+        }
+        
+        .description-container p {
+            font-size: 1.2rem;
+            line-height: 1.6; /* Adjust line height for readability */
+            color: #333; /* Adjust text color */
+            margin-top: 20px; /* Adjust space above the p tag */
+        }
+        
+        .description-container strong {
+            color: #28a745; /* Make strong text green */
+        }
+
+        select#electric {
+     
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            -moz-appearance: none;    /* Firefox */
+            appearance: none;         /* Modern browsers */
+    
+  
+    
+  
+            border: 1px solid #ced4da;
+            padding-right: 10px;  /* 去掉多余的右侧空间 */
+            color: #6c757d;       /* 设置文本颜色为灰色 */
+        }
+    
+
+        select#electric::-ms-expand {
+            display: none; 
+        }
+    
+   
+        select[disabled] {
+            cursor: not-allowed;
+            background-color: #e9ecef; 
+            border: 1px solid #ced4da; 
+        }
+        
+        
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="description-container">
+        <h2>Your Commute, Reimagined</h2>
+        <p>
+        Every kilometer driven in an electric vehicle produces significantly fewer emissions than traditional petrol cars.  See how <strong>Electric Vehicles</strong> help you <strong>save the planet</strong> and your <strong>wallet</strong>.
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="step-nav">
+            <button class="step-button active" data-step="1">Step 1: What is your current vehicle type?</button>
+            <button class="step-button" data-step="2">Step 2: View Comparison</button>
+        </div>
+
+        <p style = "font-size: 1.1rem;">Choose your current petrol vehicle type and we will automatically select the best electric vehicle based on your choice</p>
+        <div class="step active" id="step1">
+            <div class="row">  
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <h5>Petrol Vehicle</h5>
+                        <select id="petrol" class="form-control"></select>
+                        <div class="emission-value" id="petrol-value">193g/km</div>
+                        <p>CO₂ emissions per/km</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <h5>  Electric Vehicle    <i class="fas fa-charging-station" style="color: #28a745;"></i> </h5>
+                        
+                        <select id="electric" class="form-control" disabled></select>
+                        <div class="emission-value" id="electric-value">40g/km</div>
+                        <p>CO₂ emissions per/km</p>
+                    </div>
+                </div>
+ 
+            </div>
+            <button id="nextStep" class="btn btn-primary mt-4">Next Step</button>
+        </div>
+
+        <div class="step" id="step2">
+            <div class="slider-container">
+                <div class="row">
+                    <div class="col-md-8 slider-item">
+                        <label for="distance">Daily Commute Distance (km)</label>
+                        <input type="range" id="distance" class="custom-range" min="1" max="1000" value="44" step="1">
+                        <div class="d-flex justify-content-between tick-marks">
+                            <span>1</span>
+                            <span>100</span>
+                            <span>200</span>
+                            <span>300</span>
+                            <span>400</span>
+                            <span>500</span>
+                            <span>600</span>
+                            <span>700</span>
+                            <span>800</span>
+                            <span>900</span>
+                            <span>1000</span>
+                        </div>
+                        <div class="slider-value" id="distance-value">44 km</div>
+                    </div>
+                    <div class="col-md-4 slider-item">
+                        <label for="days">Commute Days per Week</label>
+                        <input type="range" id="days" class="custom-range" min="1" max="7" value="5" step="1">
+                        <div class="d-flex justify-content-between tick-marks">
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                            <span>6</span>
+                            <span>7</span>
+                        </div>
+                        <div class="slider-value" id="days-value">5 days</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container mt-4">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Your Environmental Impact</h5>
+                        <p class="emission-reduction mb-0">
+                            <i class="fas fa-leaf text-success mr-2"></i>
+                            <span id="emission-reduction-amount" class="text-success">2.09</span>
+                        </p>
+                        <p class="lead">tonnes of CO₂ reduced per year</p>
+                        <p class="mb-0">Great choice! By choosing an electric vehicle, you're making a significant contribution to our environment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="card chart-card">
+                    <div id="emissionsGraph"></div>
+                </div>
+                <div class="card chart-card">
+                    <div id="lifetimeGraph"></div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h4>Overall Carbon Footprint</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total CO₂ Emissions</h5>
+                                <h2 id="total-emissions"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">CO₂ Emissions by Transport Type</h5>
+                                <p id="emissions-by-type"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- Button -->
+            <div style="text-align: right; margin-top: 20px;">
+                <a href="/EVCost" class="btn btn-success benefits-btn" style="background-color: #4CAF50; border-color: #4CAF50;">
+                    Compare Fuel vs EV Costs
+                </a>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <div class="chat-bubble" id="chatBubble">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223ZM8.25 10.875a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25ZM10.875 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" clip-rule="evenodd" />
+        </svg>
+    </div>
+    
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">CO2 Emission Calculation Method and Data Sources</div>
+            <p>On this platform, we calculate the CO2 emissions for different vehicle types through a comprehensive Life Cycle Analysis (LCA). This includes all relevant emissions throughout the entire lifecycle of the vehicle, from production to use, and finally disposal. Our calculations are based on the following key factors:</p>
+            <p><strong>Data Sources:</strong><br>
+            Our emission data primarily references authoritative sources from the Australian market, including vehicle usage survey data from the Australian Bureau of Statistics (ABS) and the Life Cycle Analysis (LCA) report from Transport & Environment. Emission factors (such as CO2 emissions per kilometer) are based on international standards, such as data from the Worldwide Harmonized Light Vehicle Test Procedure (WLTP). Although these data are standardized, we recognize that they may underestimate emissions under actual driving conditions.</p>
+            <p><strong>Fuel and Efficiency Data:</strong><br>
+            Our data covers fuel consumption and efficiency for various vehicle types in the market (including light, compact, medium, and large vehicles, as well as SUVs, vans, and utes). These data have been adjusted to reflect the actual conditions of the Australian market.</p>
+            <p><strong>Electricity Emission Data:</strong><br>
+            For Battery Electric Vehicles (BEVs), our calculations are based on the electricity generation emission factors for different states and regions of Australia, considering the energy mix of the grid (e.g., coal, natural gas, renewable energy) and transmission losses. We also provide an option to charge using 100% renewable energy (e.g., rooftop solar) to demonstrate its impact on emissions.</p>
+            <p><strong>Vehicle Life Cycle Analysis:</strong><br>
+            The emission data for each vehicle type is calculated through Life Cycle Analysis, covering the entire process from raw material extraction, vehicle and battery manufacturing, usage phase, to recycling. The battery production emissions for electric vehicles are based on leading global LCA models and assume manufacturing in China, as this aligns with the current situation in the Australian market.</p>
+            <p><strong>Conservative Modeling:</strong><br>
+            We use conservative estimation methods to ensure the model's applicability under different conditions. For example, we assume the highest emissions for electric vehicle battery production and do not account for potential future improvements in energy structures that could favor electric vehicles.</p>
+            <p><strong>Please Note:</strong><br>
+            This tool is designed to provide average estimates of lifecycle emissions for different vehicle types across various regions of Australia. It is important to note that the data presented here is representative and does not provide specific estimates of lifecycle emissions for any particular vehicle make or model.</p>
+        </div>
+    </div>
+
+    
+    
+    {% include 'footer.html' %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const vehicleData = {
+        electric: {
+            'Light Electric': 40, 'Small Electric': 56, 'Medium Electric': 73, 'Large Electric': 87,
+            'Upper Large Electric': 97, 'Small SUV Electric': 61, 'Medium SUV Electric': 74,
+            'Large SUV Electric': 87, 'People Mover Electric': 93, 'Small Van Electric': 54,
+            'Large Van Electric': 75, 'Ute Electric': 99
+        },
+        petrol: {
+            'Light Petrol': 193, 'Small Petrol': 247, 'Medium Petrol': 263, 'Large Petrol': 270,
+            'Upper Large Petrol': 320, 'Small SUV Petrol': 242, 'Medium SUV Petrol': 279,
+            'Large SUV Petrol': 304, 'People Mover Petrol': 302, 'Small Van Petrol': 257,
+            'Large Van Petrol': 295, 'Ute Petrol': 310
+        }
+    };
+
+    const electricSelect = document.getElementById('electric');
+    const petrolSelect = document.getElementById('petrol');
+    const distanceRange = document.getElementById('distance');
+    const daysRange = document.getElementById('days');
+    const nextStepButton = document.getElementById('nextStep');
+    const stepButtons = document.querySelectorAll('.step-button');
+    const steps = document.querySelectorAll('.step');
+
+    function populateDropdown(selectElementId, options) {
+        const selectElement = document.getElementById(selectElementId);
+        for (const [key, value] of Object.entries(options)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            selectElement.add(option);
+        }
+    }
+
+    populateDropdown('electric', vehicleData.electric);
+    populateDropdown('petrol', vehicleData.petrol);
+
+    function updatePetrolSelection() {
+        const selectedPetrol = petrolSelect.value;
+        const petrolEmission = vehicleData.petrol[selectedPetrol];
+        document.getElementById('petrol-value').textContent = `${petrolEmission}g/km`;
+        updateElectricSelection();
+    }
+
+    function updateElectricSelection() {
+        const petrolType = petrolSelect.value.split(' ')[0];
+        const correspondingElectric = Object.keys(vehicleData.electric).find(key => key.startsWith(petrolType));
+        electricSelect.value = correspondingElectric;
+        document.getElementById('electric-value').textContent = `${vehicleData.electric[correspondingElectric]}g/km`;
+    }
+
+    petrolSelect.addEventListener('change', function() {
+        updatePetrolSelection();
+    });
+    
+
+    function updateSliderBackground(slider) {
+        const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+        slider.style.background = `linear-gradient(to right, #007bff ${value}%, #e0e0e0 ${value}%)`;
+    }
+
+    updateSliderBackground(distanceRange);
+    updateSliderBackground(daysRange);
+
+    function updateEmissionReductionSummary(electricEmissions, petrolEmissions) {
+        const reduction = petrolEmissions - electricEmissions;
+        const reductionElement = document.getElementById('emission-reduction-amount');
+        reductionElement.textContent = reduction.toFixed(2);
+        
+        const summaryCard = document.querySelector('.summary-card');
+        const cardBody = summaryCard.querySelector('.card-body');
+    
+        // 移除背景色类
+        summaryCard.classList.remove('bg-success', 'bg-danger');
+        
+        // 始终保持白色背景
+        summaryCard.style.backgroundColor = '#FFFFFF';
+    
+        if (reduction > 0) {
+            cardBody.innerHTML = `
+                <h5 class="card-title">Your Environmental Impact</h5>
+                <p class="emission-reduction mb-0">
+                    <i class="fas fa-leaf text-success mr-2"></i>
+                    <span id="emission-reduction-amount" class="text-success">${reduction.toFixed(2)}</span>
+                </p>
+                <p class="lead">tonnes of CO₂ reduced per year</p>
+                <p class="mb-0">Great choice! By choosing an electric vehicle, you're making a significant contribution to our environment.</p>
+            `;
+        } else {
+            cardBody.innerHTML = `
+                <h5 class="card-title">Your Environmental Impact</h5>
+                <p class="emission-reduction mb-0">
+                    <i class="fas fa-exclamation-triangle text-danger mr-2"></i>
+                    <span id="emission-reduction-amount" class="text-danger">${Math.abs(reduction).toFixed(2)}</span>
+                </p>
+                <p class="lead">tonnes of CO₂ increased per year</p>
+                <p class="mb-0">Consider choosing an electric vehicle to reduce your carbon footprint.</p>
+            `;
+        }
+    }
+
+    const updateCharts = async function () {
+        try {
+            const electric = electricSelect.value;
+            const petrol = petrolSelect.value;
+            const distance = distanceRange.value;
+            const days = daysRange.value;
+
+            const response = await fetch('/api/emissions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    electric: electric,
+                    petrol: petrol,
+                    distance: parseInt(distance),
+                    days: parseInt(days)
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('API Response:', data);
+
+            updateEmissionReductionSummary(data.yearly_emissions.electric, data.yearly_emissions.petrol);
+
+            Plotly.newPlot('emissionsGraph', [{
+                x: ['Electric', 'Petrol'],
+                y: [data.yearly_emissions.electric, data.yearly_emissions.petrol].map(val => parseFloat(val.toFixed(2))),
+                type: 'bar',
+                marker: {
+                    color: ['#4CAF50', '#FFC107']
+                },
+                text: [data.yearly_emissions.electric, data.yearly_emissions.petrol].map(val => val.toFixed(2)),
+                textposition: 'auto',
+                hoverinfo: 'y',
+            }], {
+                title: {
+                    text: 'Annual CO₂ Emissions (tonnes/year)',
+                    font: {
+                        family: 'Poppins, sans-serif',
+                        size: 16,
+                        color: '#212529'
+                    }
+                },
+                xaxis: { title: 'Vehicle Type' },
+                yaxis: { title: 'CO₂ Emissions (tonnes/year)' },
+                bargap: 0.3,
+            }, {
+                displayModeBar: false
+            });
+
+            Plotly.newPlot('lifetimeGraph', [
+            { 
+                x: data.lifetime_emissions.distance, 
+                y: data.lifetime_emissions.electric.map(val => parseFloat(val.toFixed(2))), 
+                mode: 'lines', 
+                name: electric 
+            },
+            { 
+                x: data.lifetime_emissions.distance, 
+                y: data.lifetime_emissions.petrol.map(val => parseFloat(val.toFixed(2))), 
+                mode: 'lines', 
+                name: petrol 
+            }
+        ], {
+                title: {
+                    text: 'Total Lifetime CO₂ Emissions',
+                    font: {
+                        family: 'Poppins, sans-serif',
+                        size: 16,
+                        color: '#212529'
+                    }
+                },
+                xaxis: { title: 'Distance (km)' },
+                yaxis: { title: 'Tonnes of CO₂ emissions' }
+                
+            }, {
+                displayModeBar: false
+            });
+
+            // Update carbon footprint data
+            document.getElementById('total-emissions').textContent = `${data.total_emissions} tons`;
+            
+            let emissionsByTypeHTML = Object.entries(data.emissions_percentage)
+            .map(([type, percentage]) => `
+                <div class="emission-type">
+                    <span class="emission-label">${type}:</span>
+                    <span class="emission-value">${percentage}%</span>
+                </div>
+            `)
+            .join('');
+            document.getElementById('emissions-by-type').innerHTML = emissionsByTypeHTML;
+        } catch (error) {
+            console.error('Error updating charts:', error);
+            alert('An error occurred while updating the charts. Please try again.');
+        }
+    };
+
+    distanceRange.addEventListener('input', function () {
+        document.getElementById('distance-value').textContent = `${distanceRange.value} km`;
+        updateSliderBackground(distanceRange);
+        updateCharts();
+    });
+
+    daysRange.addEventListener('input', function () {
+        document.getElementById('days-value').textContent = `${daysRange.value} days`;
+        updateSliderBackground(daysRange);
+        updateCharts();
+    });
+
+    nextStepButton.addEventListener('click', function() {
+        steps[0].classList.remove('active');
+        steps[1].classList.add('active');
+        stepButtons[0].classList.remove('active');
+        stepButtons[1].classList.add('active');
+        updateCharts();
+    });
+
+    stepButtons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            steps.forEach(step => step.classList.remove('active'));
+            stepButtons.forEach(btn => btn.classList.remove('active'));
+            steps[index].classList.add('active');
+            this.classList.add('active');
+            if (index === 1) {
+                updateCharts();
+            }
+        });
+    });
+
+    // Chat bubble and modal logic
+    const chatBubble = document.getElementById('chatBubble');
+    const myModal = document.getElementById('myModal');
+    const modalClose = document.getElementsByClassName('close')[0];
+
+    chatBubble.onclick = function() {
+        myModal.style.display = "block";
+    }
+
+    modalClose.onclick = function() {
+        myModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == myModal) {
+            myModal.style.display = "none";
+        }
+    }
+
+    // Initial setup
+    updatePetrolSelection();
+    updateCharts();
+});
+</script>
+</body>
+</html>

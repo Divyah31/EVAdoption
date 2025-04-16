@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Charging Stations in Melbourne</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .station {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .connector-aggregation {
+            margin-left: 20px;
+            padding: 5px;
+            border-left: 2px solid #4CAF50;
+        }
+        .not-available {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const API_KEY = 'AIzaSyAQp8u9oJRc7PDy_xp-2mPVPLYEgqL-DxY'; // Replace with your actual API key
+
+        function App() {
+            const [query, setQuery] = React.useState('EV charging station in Melbourne');
+            const [stations, setStations] = React.useState([]);
+            const [error, setError] = React.useState(null);
+
+            const searchStations = async () => {
+                try {
+                    setError(null);
+                    const textSearchResponse = await axios.post(
+                        'https://places.googleapis.com/v1/places:searchText',
+                        { textQuery: query, languageCode: "en" },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Goog-Api-Key': API_KEY,
+                                'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress'
+                            }
+                        }
+                    );
+
+                    const placeIds = textSearchResponse.data.places.map(place => place.id);
+                    const detailsPromises = placeIds.map(id =>
+                        axios.get(`https://places.googleapis.com/v1/places/${id}`, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Goog-Api-Key': API_KEY,
+                                'X-Goog-FieldMask': 'id,displayName,formattedAddress,evChargeOptions'
+                            }
+                        })
+                    );
+
+                    const detailsResponses = await Promise.all(detailsPromises);
+                    setStations(detailsResponses.map(response => response.data));
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    setError('An error occurred while fetching data. Please try again.');
+                }
+            };
+
+            const renderValue = (value, defaultText = 'Not available') => {
+                return value != null ? value : <span className="not-available">{defaultText}</span>;
+            };
+
+            const renderConnectorType = (type) => {
+                const types = {
+                    EV_CONNECTOR_TYPE_UNSPECIFIED: 'Unspecified',
+                    EV_CONNECTOR_TYPE_OTHER: 'Other',
+                    EV_CONNECTOR_TYPE_J1772: 'J1772 (Type 1)',
+                    EV_CONNECTOR_TYPE_TYPE_2: 'Type 2 (Mennekes)',
+                    EV_CONNECTOR_TYPE_CHADEMO: 'CHAdeMO',
+                    EV_CONNECTOR_TYPE_CCS_COMBO_1: 'CCS Combo 1',
+                    EV_CONNECTOR_TYPE_CCS_COMBO_2: 'CCS Combo 2',
+                    EV_CONNECTOR_TYPE_TESLA: 'Tesla',
+                    EV_CONNECTOR_TYPE_UNSPECIFIED_GB_T: 'GB/T',
+                    EV_CONNECTOR_TYPE_UNSPECIFIED_WALL_OUTLET: 'Wall Outlet'
+                };
+                return types[type] || type;
+            };
+
+            return (
+                <div className="container">
+                    <h1>EV Charging Stations in Melbourne</h1>
+                    <input 
+                        type="text" 
+                        value={query} 
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Search for EV charging stations"
+                    />
+                    <button onClick={searchStations}>Search</button>
+                    {error && <p style={{color: 'red'}}>{error}</p>}
+                    {stations.map((station, index) => (
+                        <div key={index} className="station">
+                            <h2>{station.displayName && station.displayName.text}</h2>
+                            <p>{station.formattedAddress}</p>
+                            {station.evChargeOptions ? (
+                                <div>
+                                    <p>Total Connectors: {renderValue(station.evChargeOptions.connector_count)}</p>
+                                    <h3>Connector Details:</h3>
+                                    {station.evChargeOptions.connector_aggregation && station.evChargeOptions.connector_aggregation.map((agg, aggIndex) => (
+                                        <div key={aggIndex} className="connector-aggregation">
+                                            <p>Type: {renderConnectorType(agg.type)}</p>
+                                            <p>Max Charge Rate: {renderValue(agg.max_charge_rate_kw)} kW</p>
+                                            <p>Count: {renderValue(agg.count)}</p>
+                                            <p>Available: {renderValue(agg.available_count)}</p>
+                                            <p>Out of Service: {renderValue(agg.out_of_service_count)}</p>
+                                            <p>Last Updated: {renderValue(new Date(agg.availability_last_update_time).toLocaleString())}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No EV charging information available</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

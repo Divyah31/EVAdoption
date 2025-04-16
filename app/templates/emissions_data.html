@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Emissions Data with Slider</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa!important;
+        }
+        #map {
+            height: 350px;
+            margin-top: 10px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: white;
+            border: 2px solid grey;
+            z-index: 1000;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #legend b {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #legend i {
+            width: 20px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        #yearSlider {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -10px;
+        }
+        
+        .slider-labels span {
+            font-size: 14px;
+        }
+        
+        /* Slider Track and Fill Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, #666 0%, #ddd 0%);
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.15s ease-in-out;
+        }
+        
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            background: transparent;
+            border-radius: 5px;
+        }
+        
+        input[type=range]::-moz-range-track {
+            background: transparent;
+            border: none;
+            height: 10px;
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 120px;
+            background: url('{{ url_for('static', filename='images/slider.png') }}') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+            position: relative;
+            top: -65px;
+            z-index: 1;
+        }
+        
+        input[type=range]::-moz-range-thumb {
+            width: 100px;
+            height: 120px;
+            background: url('{{ url_for('static', filename='images/slider.png') }}') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+            position: relative;
+            top: -65px;
+            z-index: 1;
+        }
+
+        /* Pop-up Message Styles */
+        .popup-message {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background-color: #ffffff;
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 121, 107, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: blink 1s step-start 0s infinite;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .popup-message p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .popup-message button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .popup-message button:hover {
+            background-color: #004d40;
+        }
+
+        .benefits-btn:hover {
+            background-color: #45a049; /* Slightly darker green */
+            border-color: #45a049;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+            transform: scale(1.05); /* Slight zoom effect */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Blinking Animation */
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Hand slide animation */
+.hand-slide {
+  width: 50px;
+  animation: slide 2s infinite ease-in-out;
+}
+
+/* Ensure the container has relative positioning */
+.map-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style the map image to keep it small */
+.map-image-small {
+    width: 150px; /* Adjust size as needed */
+    height: auto;
+}
+
+/* Position the hand icon absolutely within the container and apply the blinking animation */
+.hand-click-animation {
+    position: absolute;
+    top: 20px; /* Adjust these values to position the hand icon on top of the map */
+    left: 90px;
+    width: 60px; /* Adjust the size of the hand icon as needed */
+    height: auto;
+    animation: click 1s infinite; /* Apply the click animation */
+}
+
+/* Keyframes for the click animation */
+@keyframes click {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* Slider Image Styling */
+.slider-image-small {
+    width: 450px; /* Adjust the size of the slider image */
+    height: auto;
+    margin-bottom: 10px; /* Space between the slider and map */
+}
+
+/* Hand slide animation on the slider */
+.hand-slide-animation {
+    position: absolute;
+    top: px; /* Adjust position to place it on the slider */
+    left: 300px; /* Adjust position for sliding motion */
+    width: 50px; /* Adjust size of the hand icon */
+    animation: slide 2s infinite ease-in-out; /* Apply sliding animation */
+}
+
+/* Keyframes for sliding hand animation */
+@keyframes slide {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(20px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    {% include 'onload.html'%}
+    {% include 'navbar.html' %}
+
+    <div class="container" style="margin-top: 90px;">
+        <div class="engage-section" style="text-align: left;">
+            <h2 style="font-size: 2.0rem;
+            font-weight: 600;  color: #28a745;font-weight: bold;">Is Your Daily Commute Contributing to Melbourne's Climate Crisis?</h2>
+
+            <p style="color: #333; font-size: 1.1em;">
+                <strong style="color: #4CAF50;">Transportation</strong> is one of 
+                <strong style="color: #4CAF50;">Melbourne’s largest contributors</strong> to 
+                <strong style="color: #4CAF50;">climate change</strong>. Every 
+                <strong style="color: #4CAF50;">car</strong>, 
+                <strong style="color: #4CAF50;">bus</strong>, and 
+                <strong style="color: #4CAF50;">tram</strong> on the road adds to this burden. 
+                But how much is it <strong style="color: #4CAF50;">affecting your community</strong>?
+            </p>
+            
+        </div>
+
+        <h4 style="color: #28a745; font-size: 1.1em;font-weight: bold;">Transport Emissions for the Year - <span id="selectedYear">{{ selected_year }}</span></h4>
+        <form method="GET" action="{{ url_for('emissions_data.emissions_data') }}">
+            <div class="form-group">
+                <label for="year" style="display: none;">Year:</label>
+                <input type="range" name="year" id="yearSlider" min="2018" max="2023" step="1" value="{{ selected_year }}" oninput="updateYearLabel(this.value)" onchange="this.form.submit()">
+                <div class="slider-labels">
+                    <span>2018</span>
+                    <span>2019</span>
+                    <span>2020</span>
+                    <span>2021</span>
+                    <span>2022</span>
+                    <span>2023</span>
+                </div>
+                <div style="display: none;">Selected Year: <span id="yearValue">{{ selected_year }}</span></div>
+            </div>
+        </form>
+
+        <div id="map">
+            <!-- Pop-up Message -->
+            <div id="popupMessage" class="popup-message">
+                <p><strong>Is your area contributing to the climate crisis?</strong></p>
+                <p>Click on any region to know more</p>
+                
+            </div>
+            <div id="legend">
+                <b>Emissions Legend</b>
+                <div><i style="background-color: #FF0000;"></i> Very High</div>        
+                <div><i style="background-color: #FF6347;"></i> High</div>           
+                <div><i style="background-color: #FFA07A;"></i> Medium</div>         
+                <div><i style="background-color: #FFD700;"></i> Low</div>            
+            </div>
+        </div>
+        <p style="color: #555;text-align: left; margin-top: 20px;">
+            You've seen the impact of transport emissions—now let's be part of the solution. Discover how <strong style="color: #4CAF50;">Electric Vehicles</strong> can <strong style="color: #4CAF50;">save you money</strong> and <strong style="color: #4CAF50;">reduce your carbon footprint</strong>.
+        </p>
+        <!-- Button -->
+        <div style="text-align: right; margin-top: 5px;">
+            <a href="/EvCompare" class="btn btn-success benefits-btn" style="background-color: #4CAF50; border-color: #4CAF50;">
+                Benefits of EV
+            </a>
+        </div>
+
+        <!-- Modal for displaying the chart -->
+        <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chartModalLabel">Transport Emissions Breakdown by Source</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="percentageMessage" style="color: #000000;"></p> <!-- Dynamic message -->
+                        <canvas id="transportChart" width="500" height="100"></canvas>
+                        <p id="evTransitionMessage" style="color: #808080; margin-top: 20px;">
+                            But imagine if we could reduce these emissions by switching to 
+                            <span style="color: #4CAF50; font-weight: bold;">Electric Vehicles</span>.
+                        </p>
+
+                        <!-- EV Transition Message -->
+                        <p id="evTransitionMessage" style="color: #808080; margin-top: 20px; line-height: 1.5;">
+                            The <span style="color: #000000; font-weight: bold;">projection</span> below shows the <span style="color: #000000; font-weight: bold;">rise</span> in 
+                            <span style="color: #4CAF50; font-weight: bold;">Electric Vehicles (EVs)</span> over the years, 
+                            leading to a <span style="color: #4CAF50; font-weight: bold;">cleaner</span>, more 
+                            <span style="color: #4CAF50; font-weight: bold;">sustainable</span> Melbourne as 
+                            <span style="color: #000000; font-weight: bold;">EVs replace automobiles</span>.
+                        </p>
+
+                                           
+                        <br>
+                        <canvas id="evProjectionChart" width="400" height="100"></canvas> <!-- EV Projections Chart -->
+
+                        <p style="color: #555;text-align: left; margin-top: 20px;">
+                            Now let’s explore how <strong style="color: #4CAF50;">Electric Vehicles can save you money</strong> and <strong style="color: #4CAF50;">reduce your carbon footprint</strong> compared to traditional automobiles.
+                        </p>
+
+                        <!-- Button -->
+                        <div style="text-align: right;">
+                            <a href="/EvCompare" class="btn btn-success benefits-btn" style="background-color: #4CAF50; border-color: #4CAF50;">
+                                Benefits of EV
+                            </a>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+         <!-- Interactive Instruction Modal -->
+<div id="instructionModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Let’s see how your <strong style="color: #4CAF50;">commute impacts the environment</strong>.</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <p>Start by <strong style="color: #4CAF50;">sliding the year selector</strong> to see how <strong style="color: #4CAF50;">transport emissions</strong> have changed over time.</p>
+          <!-- Slider Image with Hand Animation -->
+          <div style="position: relative; display: inline-block; margin-bottom: 20px;">
+            <img src="{{ url_for('static', filename='images/slider_info.png') }}" alt="Slider" class="slider-image-small" />
+            <img src="{{ url_for('static', filename='images/hand.png') }}" alt="Hand Slide" class="hand-slide-animation" />
+        </div>
+          <p>Want to know more about your area? <strong style="color: #4CAF50;">Click on any region</strong> to <strong style="color: #4CAF50;">explore transport emission breakdown</strong>.</p>
+
+          <div class="map-container" style="position: relative; display: inline-block;">
+            <img src="{{ url_for('static', filename='images/map_info.png') }}" alt="Map" class="map-image-small" />
+            <img src="{{ url_for('static', filename='images/hand.png') }}" alt="Hand Click" class="hand-click-animation" />
+        </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    </div>
+
+   
+
+    {% include 'footer.html' %}
+
+    <script>
+    var map = L.map('map').setView([-37.8136, 144.9631], 8.1);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    var geojsonData = {{ geojson_data|safe }};
+
+    function updateMap() {
+        var geojsonLayer = L.geoJSON(geojsonData, {
+            style: function (feature) {
+                var emissions = parseFloat(feature.properties.total_emissions);
+                return {
+                    color: '#2A2A2A',
+                    weight: 1.5,
+                    fillColor: feature.properties.color,
+                    fillOpacity: 0.75,
+                    opacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                // Add tooltip to display total emissions on hover
+                layer.bindTooltip(function () {
+                    var formattedEmissions = parseFloat(feature.properties.total_emissions).toFixed(2);
+                    return feature.properties.lga + ': ' + formattedEmissions + ' tons CO₂';  // Display LGA and total emissions
+                }, {
+                    permanent: false,
+                    direction: 'top',
+                    className: 'emissions-tooltip'
+                });
+    
+                // On click, fetch and display both transport emissions and EV projection data
+                layer.on('click', function () {
+                    document.getElementById('chartModalLabel').textContent = 'Transport Emissions Breakdown for ' + feature.properties.lga;
+    
+                    // Fetch transport emissions data
+                    fetch('/get_transport_emissions?lga_name=' + feature.properties.lga + '&year={{ selected_year }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Data received from backend:", data);
+                            var percentageMessage = '';
+                            Object.keys(data).forEach(function (mode) {
+                                if (mode === "AUTOMOBILE") {
+                                    percentageMessage = "<span style=\"color: #808080;\">Nearly </span><span style=\"color: #FF0000;\"><strong>" + data[mode].percentage + "%</strong></span><span style=\"color: #808080;\"> of transport emissions in " + feature.properties.lga + " come from automobiles.</span>";
+                                }
+                                
+                            });
+                            document.getElementById('percentageMessage').innerHTML = percentageMessage;  // Use innerHTML instead of innerText
+                            displayGraph(data, feature.properties.lga);  // Display emissions graph
+    
+                            // Fetch EV projection data
+                            fetch('/ev_data_by_lga?lga_name=' + feature.properties.lga)
+                                .then(evResponse => evResponse.json())
+                                .then(evData => {
+                                    displayEVProjection(evData);  // Display EV projection graph
+                                    $('#chartModal').modal('show');  // Show the modal after both charts are loaded
+                                })
+                                .catch(evError => {
+                                    console.error("Error fetching EV projection data:", evError);
+                                });
+                        })
+                        .catch(error => {
+                            console.error("Error fetching data:", error);
+                        });
+                });
+            }
+        }).addTo(map);
+    }
+    
+
+    function displayGraph(data, lga_name) {
+        if (window.myChart) {
+            window.myChart.destroy();
+        }
+    
+        var ctx = document.getElementById('transportChart').getContext('2d');
+        var labels = [];
+        var emissionsData = [];
+        var backgroundColors = [];
+        var borderColors = [];
+    
+        Object.keys(data).forEach(function (mode) {
+            labels.push(mode);
+            emissionsData.push(data[mode].total_emissions);
+    
+            // Set the color for "AUTOMOBILE" to red, others remain the same
+            if (mode === "AUTOMOBILE") {
+                backgroundColors.push('rgba(255, 0, 0, 0.5)');  // Red with opacity
+                borderColors.push('rgba(255, 0, 0, 1)');       // Solid red border
+            } else if (mode === "BUS") {
+                backgroundColors.push('rgba(54, 162, 235, 0.5)'); // Blue
+                borderColors.push('rgba(54, 162, 235, 1)');       // Solid blue border
+            } else if (mode === "MOTORCYCLE") {
+                backgroundColors.push('rgba(255, 206, 86, 0.5)'); // Yellow
+                borderColors.push('rgba(255, 206, 86, 1)');       // Solid yellow border
+            }
+        });
+    
+        window.myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Emissions by Transport Mode in ' + lga_name,
+                    data: emissionsData,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'CO₂ Emissions (tons)'
+                        },
+                        ticks: {
+                            color: '#000000' // Set Y-axis label color to black
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#000000' // Set X-axis label color to black
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Hide the legend
+                    }
+                }
+            }
+        });
+        
+    }
+    
+    // Function to check if the modal has been shown before
+function showInstructionModal() {
+    // Check if the modal has been shown in this session
+    if (!sessionStorage.getItem('instructionModalShown')) {
+        // Show the modal since it hasn't been shown yet
+        $('#instructionModal').modal('show');
+        
+        // Mark the modal as shown in session storage
+        sessionStorage.setItem('instructionModalShown', 'true');
+    }
+}
+
+    // Show the blinking pop-up message on page load
+    window.onload = function() {
+        // Show the interactive instruction modal
+        showInstructionModal();
+        showPopup();
+        updateMap();
+    };
+
+    function showPopup() {
+        document.getElementById('popupMessage').style.display = 'block';
+    }
+
+    
+
+    document.getElementById('yearSlider').addEventListener('input', function() {
+        updateSliderBackground(this);
+    });
+    
+    document.getElementById('yearSlider').addEventListener('change', function() {
+        updateSliderBackground(this);
+    });
+    
+    function updateSliderBackground(slider) {
+        var value = slider.value;
+        var min = slider.min;
+        var max = slider.max;
+        var percentage = (value - min) / (max - min) * 100;
+        slider.style.background = 'linear-gradient(to right, #666 ' + percentage + '%, #ddd ' + percentage + '%)';
+    }
+
+    function displayEVProjection(evData) {
+        if (window.evChart) {
+            window.evChart.destroy();
+        }
+    
+        var ctx = document.getElementById('evProjectionChart').getContext('2d');
+        var labels = [];
+        var vehicleTypeData = {
+            'RES_SMALL': []  // Only keeping RES_SMALL
+        };
+    
+        // Populate data
+        evData.forEach(function (row) {
+            labels.push(row.year);  // Year for x-axis labels
+            if (row.vehicle_type === 'RES_SMALL') {
+                vehicleTypeData['RES_SMALL'].push(row.total_number_of_vehicles);
+            }
+        });
+    
+        // Create the EV projection chart with only RES_SMALL
+        window.evChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [...new Set(labels)],  // Ensure unique years
+                datasets: [
+                    {
+                        label: 'Electric Vehicle',
+                        data: vehicleTypeData['RES_SMALL'],
+                        borderColor: 'rgba(0, 255, 0, 1)',  // Bright green
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)' , // Transparent green for background
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Number of EV Vehicles'
+                        }
+                    },
+                    x: {  // X-axis configuration
+                        title: {
+                            display: true,
+                            text: 'Year'  // X-axis label
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+  
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV Recommendations</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recommendation_details.css') }}">
+</head>
+
+<!-- footer.html -->
+<style>
+
+    #footer-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 15px;
+        margin-bottom: 15px;
+    }
+    
+    #footer-disclaimer {
+        font-size: 0.85rem;
+        color: #555;
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    #footer-copyright p, #footer-privacy a {
+        color: #333;
+        margin: 0;
+    }
+    
+    #footer-privacy a {
+        margin: 0 10px;
+        text-decoration: none;
+    }
+    
+    #footer-privacy a:hover {
+        text-decoration: underline;
+    }
+    
+    .row.w-100 {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    @media (max-width: 768px) {
+        #footer-copyright, #footer-privacy {
+            text-align: center !important;
+        }
+        
+        .row.w-100 {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    
+</style>
+<body>
+    {% include 'navbar1.html' %}
+    
+    <header>
+        <h1>Find Your Match</h1>
+    </header>
+    <main>
+        <div class="results">
+            <div class="results-header">
+                <h2 id="carsAvailable"></h2>
+                <div class="filters">
+                    <div class="price-filter">
+                        <label>Price Range (AUD):</label>
+                        <div class="price-slider-container">
+                            <input type="range" id="priceSliderMin" min="30000" max="500000" value="30000" step="1000">
+                            <input type="range" id="priceSliderMax" min="30000" max="500000" value="500000" step="1000">
+                            <div class="slider-track"></div>
+                        </div>
+                        <div class="price-display">
+                            <span id="minPriceDisplay">30,000</span> - 
+                            <span id="maxPriceDisplay">500,000</span>
+                        </div>
+                    </div>
+                    <div class="type-filter">
+                        <label for="typeSelect">Type:</label>
+                        <select id="typeSelect">
+                            <option value="all">All Types</option>
+                        </select>
+                    </div>
+                    <div class="sort-by">
+                        <label for="sortSelect">Sort by:</label>
+                        <select id="sortSelect">
+                            <option value="matchPercentage">Match Percentage</option>
+                            <option value="price">Price</option>
+                            <option value="range">Range</option>
+                            <option value="energyConsumption">Energy Consumption</option>
+                            <option value="fastCharge">Fast Charge</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="carGrid" class="car-grid"></div>
+        </div>
+    </main>
+
+    <footer class="mt-5 py-3 bg-light">
+        <div id="footer-container" class="d-flex justify-content-between align-items-center">
+            
+            <div class="row">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align: left;">
+                        <h2 style="color: #4CAF50;">Ready to optimize your journey?</h2>
+                        <p>Let's plan a route and explore how much energy you can save on your journey.</p>
+                    </div>
+                    <a href="/ev_map" class="btn btn-success" style="background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; border-radius: 5px;">
+                        Plan Your Route
+                    </a>
+                </div>
+                
+                <div class="col-md-12 text-center">
+                    <p id="footer-disclaimer">
+                        Disclaimer: Prices may be inaccurate and availability of cars may vary. Please check with the dealer for the latest information.
+                    </p>
+                </div>
+            </div>
+    
+            <!--<div class="row w-100">
+           
+                <div class="col-md-6 text-left" id="footer-copyright">
+                    <p>&copy; Copyright 2021 GreenDrive ― All Rights Reserved.</p>
+                </div>
+           
+                <div class="col-md-6 text-right" id="footer-privacy">
+                    <a href="#" class="mr-3">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+            </div>-->
+    
+        </div>
+    </footer>
+    
+    
+
+
+    <script src="{{ url_for('static', filename='js/recommendation_details.js') }}"></script>
+</body>
+</html>

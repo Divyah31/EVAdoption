@@ -1,0 +1,163 @@
+<!-- navbar.html -->
+<style>
+    /* Import fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+    
+    .custom-navbar {
+        background-color: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+        position: fixed; 
+        top: 0;
+        width: 100%;
+        height: 80px;
+        z-index: 1000; 
+        transition: top 0.3s; /* Smooth transition for the navbar */
+    }
+    
+    .custom-navbar .container {
+        max-width: 1600px!important;
+        margin: 0 auto; 
+        display: flex; /* Flexbox for horizontal alignment */
+        justify-content: space-between; /* Space between logo and nav items */
+        align-items: center; /* Vertical alignment */
+        padding: 0 10px; /* Adjusted padding for alignment */
+    }
+    
+    .custom-navbar .navbar-brand {
+        font-weight: normal !important;
+        color: #000 !important;
+        font-size: 18px !important;
+        font-family: 'Poppins', sans-serif !important; 
+        display: flex;
+        align-items: center; /* Align logo and text vertically */
+        margin-left: 52px; /* Move the logo further to the left */
+    }
+    
+    .custom-navbar .navbar-brand img {
+        margin-right: 10px; /* Space between logo and text */
+    }
+    
+    .custom-navbar .navbar-nav {
+        margin-left: auto; /* Pushes the navigation items to the right */
+    }
+    
+    .custom-navbar .navbar-nav .nav-link {
+        color: #555 !important;
+        font-size: 16px !important;
+        font-family: 'Poppins', sans-serif !important; 
+        margin-left: 15px; 
+    }
+    
+    .custom-navbar .navbar-nav .nav-link:hover {
+        color: #000;
+    }
+    
+    .custom-navbar .dropdown-menu {
+        background-color: #f8f9fa;
+        border: none;
+        font-size: 16px !important;
+        font-family: 'Poppins', sans-serif !important; 
+    }
+    
+    .custom-navbar .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        font-size: 16px !important; 
+        font-family: 'Poppins', sans-serif !important; 
+        padding: 5px 10px; 
+        margin-left: 15px; 
+    }
+    
+    .custom-navbar .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    
+    /* Ensure the navbar toggler is properly aligned */
+    .navbar-toggler {
+        border: none;
+        outline: none;
+    }
+    
+    .navbar-toggler-icon {
+        background-image: url('{{ url_for('static', filename='images/hamburger-icon.png') }}'); /* Replace with your icon */
+        background-repeat: no-repeat;
+        background-size: 100%;
+        width: 30px; /* Adjust width */
+        height: 30px; /* Adjust height */
+    }
+    
+    /* Ensure dropdown menu has a solid background and pushes content down on mobile */
+    @media (max-width: 992px) {
+        .navbar-collapse {
+            background-color: white; /* Set a solid background color */
+            width: 100%; /* Ensure it takes full width */
+            position: relative; /* Allow it to affect content flow */
+            transition: max-height 0.3s ease-in-out; /* Smooth transition */
+            overflow: hidden; /* Hide overflow when collapsed */
+        }
+    
+        .main-content {
+            transition: margin-top 0.3s ease-in-out; /* Smooth transition for content shift */
+        }
+    }
+    
+    
+    /* Additional media query for mobile devices */
+    @media (max-width: 576px) {
+        .custom-navbar {
+            height: auto; /* Allow the navbar to expand based on content */
+        }
+    
+        .custom-navbar .navbar-nav {
+            text-align: center; /* Center nav items on small screens */
+        }
+    
+        .custom-navbar .navbar-nav .nav-link {
+            display: block;
+            margin: 10px 0; /* Space between nav items */
+        }
+    }
+    </style>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light custom-navbar sticky-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex align-items-center mr-auto" href="/Index">
+                <!-- Logo placeholder -->
+                <img src="{{ url_for('static', filename='images/logo.png') }}" height="50" alt="Logo">
+                GreenDrive Melbourne
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav ml-auto mr-3">
+                    <li class="nav-item"><a class="nav-link" href="/Index">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Insights And Comparisons
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/emissions_data">Historical Emissions</a>
+                            <a class="dropdown-item" href="/EvCompare">CO2 Comparison</a>
+                            <a class="dropdown-item" href="/EVCost">Price Comparison</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/ev_recommend">EV Recommendation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/ev_map">Smart Route Plan</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="greenInitiativesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Green Initiatives
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="greenInitiativesDropdown">
+                            <a class="dropdown-item" href="/Incentives">EV Incentives</a>
+                            <a class="dropdown-item" href="/recycling_locations">EV Battery Recycling</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+    </nav>
+    

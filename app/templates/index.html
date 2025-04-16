@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transforming Melbourne with EVs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa!important;
+        }
+        /* Container with Video */
+        .image-container {
+            position: relative; /* Allow text to be positioned over the video */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0;
+            margin-top: 80px;
+            max-width: 100%;
+            height:auto;
+            background-color: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .image-container video {
+            width: 115%; /* Increase the width slightly beyond the container's width */
+            height: auto; /* Maintain the aspect ratio */
+            border-radius: 10px;
+            object-fit: cover; /* Cover the container while maintaining aspect ratio */
+            transform: scale(0.85); /* Scale down the video slightly */
+            object-position: center top;
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 150px; /* Adjust the top positioning to place the text on the video */
+            left: 90px; /* Move the text to the left */
+            width: auto; /* Adjust width to fit content */
+            text-align: left; /* Align text to the left */
+            color: white; /* Green color for contrast */
+            font-family: 'Poppins', sans-serif; /* Ensure the correct font is used */
+            z-index: 2; /* Ensure the text is above the video */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Add shadow for better readability */
+        }
+        
+        .text-overlay h1 {
+            font-size: 2.5em; /* Larger text size for the headline */
+            font-weight: bold; /* Apply bold weight */
+            margin: 0 0 20px 0; /* Remove default margin */
+        }
+        
+        .text-overlay p {
+            font-size: 1.2em; /* Slightly smaller text for the subheadline */
+            font-weight: 300; /* Lighter weight for the subheadline */
+            margin: 5px 0;
+            text-shadow: none;
+        }
+        .text-overlay p:first-of-type {
+            margin-top: 20px; /* Add space between the last <h1> and the first <p> */
+        }
+        
+        .explore-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 1.2em;
+            color: white;
+            background-color: #428a46;
+            border: none;
+            border-radius: 0px;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .explore-btn:hover {
+            background-color: white;  /* Background becomes white on hover */
+            color: #428a46;  /* Text color becomes green on hover */
+            border: 2px solid #428a46;  /* Keep the border green on hover */
+            text-decoration: none;  /* Keep the text without underline */
+            text-shadow: none;
+        }
+        
+        .container {
+            max-width: 1500px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .text-overlay {
+                top: 50px; /* Adjust top position for smaller screens */
+                left: 20px; /* Adjust left position for smaller screens */
+                text-align: left; /* Center text on smaller screens */
+                width: 100%; /* Make text-overlay full-width on smaller screens */
+            }
+
+            .text-overlay h1 {
+                font-size: 1em; /* Decrease font size for smaller screens */
+                margin: 0;
+            }
+
+            .text-overlay p {
+                font-size: 0.5em; /* Decrease subheadline size for smaller screens */
+            }
+
+            .explore-btn {
+                font-size: 0.5em; /* Decrease button text size */
+                padding: 5px 10px; /* Increase padding for a more touch-friendly button */
+                position: center;
+            }
+
+            .image-container {
+                height: auto; /* Make image container height flexible */
+                padding-bottom: 56.25%; /* Aspect ratio (16:9) for video */
+            }
+
+            .image-setting {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transform: none; /* Remove scaling */
+            }
+        }
+        
+        
+        .service-section {
+            padding: 5rem 0;    
+            background-color: #f8f9fa;
+        }
+        
+        .service-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer; /* Add this to show it's clickable */
+        }
+        
+        .service-card a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0; /* Make the link invisible */
+        }
+        .service-icon {
+            width: 50px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card p {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-learn-more-sm {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: auto;
+        }
+        
+        .btn-learn-more-sm:hover {
+            text-decoration: underline;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{{ url_for('static', filename='images/service-boxhoverimage.jpg') }}');
+            background-size: cover;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .service-card:hover::before {
+            opacity: 1;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            color: white;
+        }
+        
+        .service-card:hover h3,
+        .service-card:hover p,
+        .service-card:hover .btn-learn-more-sm {
+            color: white !important;
+        }   
+        
+        .scroll-arrow {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-arrow img {
+            width: 40px;
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-30px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-15px) translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'navbar3.html' %}
+
+
+    <div class="container">
+        <div class="image-container">
+            <div class="text-overlay">
+                
+                <h1>Our city's future is in our hands</h1>
+                <h1>Let's drive it clean</h1>
+                 <p>Explore how sustainable transportation is paving the way for a</p>
+                <p>cleaner, healthier, and more vibrant city</p> 
+                
+                <a href="/emissions_data" class="explore-btn">Explore Now</a>
+            </div>
+            
+            <div class="image-setting">
+                <img src="{{ url_for('static', filename='images/Shutterstoc.png') }}" alt="Description of the image" class="img-fluid">
+            </div>
+            
+            <div id="scrollArrow" class="scroll-arrow">
+                <img src="{{ url_for('static', filename='images/arrow_down.png') }}" alt="Scroll Down">
+            </div>
+
+        </div>
+    </div>
+
+    
+
+
+    <!-- Service Section -->
+    <section class="service-section">
+        <div class="container">
+            <h2 class="service-title">Your EV Journey Starts Here</h2>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/emissions_data"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon6.png') }}" alt="Comprehensive Charging Solutions" class="service-icon">
+                        <h3>Historical Emissions</h3>
+                        <p style="margin-bottom: 1px;">Curious about how much <strong>pollution</strong> our city roads generate?</p>
+                        <p style="margin-top: -20px; line-height: 1.8;">Can <strong>EVs make a difference</strong>? Discover the <strong>trends</strong> and see the <strong>impact</strong>!</p>
+                  
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/EvCompare"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon2.png') }}" alt="Home Charging Installations" class="service-icon">
+                        <h3>Impact Comparison</h3>
+                        <p style=" margin-bottom: 1px;">How much could you save with an EV?</p>
+                        <p style="margin-top: -10px; line-height: 1.8;">Compare <strong>Costs and CO2 emissions</strong> between <strong>Electric</strong> and <strong>Petrol vehicles</strong> to see the true impact on your wallet and the planet!</p>            
+                    </div>
+                </div>
+
+                <!--<div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/EVCost"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon4.png') }}" alt="Public Charging Infrastructure" class="service-icon">
+                        <h3>Cost Comparison: EV vs Petrol</h3>
+                        <p>Analyze the costs of owning an electric vehicle versus a petrol car.</p>
+            
+                    </div>
+                </div>-->
+          
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/ev_recommend"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon1.png') }}" alt="Fast and Efficient Charging" class="service-icon">
+                        <h3>EV Recommendation</h3>
+                        <p>Looking for the best EV fit for you?</p>
+                         <p style="margin-top: -40px; line-height: 1.8;">Let us guide you to the <strong>perfect match</strong> based on your <strong>lifestyle</strong> and <strong>driving needs!</strong></p>
+                    </div>
+                </div>
+          
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/Incentives"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon5.png') }}" alt="24/7 Customer Support" class="service-icon">
+                        <h3>EV Incentives</h3>
+                        <p>Ready to save on your next EV?</p>
+                        <p style="margin-top: -15px; line-height: 1.8;">Explore the latest <strong>government rebates</strong> and <strong>incentives</strong> to make the switch more affordable!</p>
+                    </div>
+                </div>
+
+          
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/ev_map"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon3.png') }}" alt="Smart Route Planning and Charging Stations" class="service-icon">
+                        <h3>Smart Route Plan</h3>
+                        <p style="line-height: 1.8;">Plan the smartest route, find <strong>charging stations</strong> along the way, and navigate <strong>elevation changes</strong> with ease. Make your journey smooth and efficient!</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <a href="/recycling_locations"></a>
+                        <img src="{{ url_for('static', filename='images/service-icon6.png') }}" alt="Smart Route Planning and Charging Stations" class="service-icon">
+                        <h3>EV Battery Recycling</h3>
+                        <p>Wondering where to recycle your EV batteries?</p>
+                        <p style="margin-top: -10px; line-height: 1.8;">Find <strong>drop-off locations</strong> near you and see the <strong>impact of your actions</strong> on a cleaner future!</p>
+                    </div>
+                </div>
+                
+              
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('scrollArrow').addEventListener('click', function() {
+            const scrollDistance = window.innerHeight; 
+            window.scrollTo({
+                top: scrollDistance,
+                behavior: 'smooth'
+            });
+        });
+
+
+        function scrollToServiceSection() {
+            const scrollDistance = window.innerHeight; 
+            window.scrollTo({
+                top: scrollDistance,
+                behavior: 'smooth'
+            });
+        }
+
+        document.getElementById('scrollArrow').addEventListener('click', scrollToServiceSection);
+
+
+    </script>
+</body>
+</html>
