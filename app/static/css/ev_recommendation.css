@@ -1,0 +1,589 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa!important;
+    background-size: cover;
+    
+}
+
+.reocommend_container {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 80px  0;
+}
+
+h1 {
+    color: #28a745; /* Green color for the text */
+    font-size: 36px; /* Adjust the size if needed */
+    font-weight: bold;
+    text-align: left;
+}
+
+.subtitle {
+    text-align: left;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.content {
+    display: flex;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 740px;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    flex-shrink: 0; 
+}
+
+.sidebar-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+}
+
+.sidebar-item i {
+    margin-right: 10px;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+    background-color: #e0f7e9; /* Light green hover background */
+    color: #2e7d32;
+}
+
+.sidebar-item.active {
+    background-color: #e0f7e9; /* Light green background for active item */
+    color: #2e7d32; /* Dark green text color for active item */
+    border-left: 4px solid #2e7d32;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 700px;
+}
+
+.main-content-inner {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.step {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step.active {
+    background-color: #2e7d32;
+    color: white;
+}
+
+/* Step 1 - Address Page */
+#map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+#address {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Step 2 - Car Style Page */
+.body-style-options {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 1px;
+}
+
+.body-style-option {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    height: 160px;
+}
+
+.body-style-option.active, .body-style-option:hover {
+    background-color: #e6f7ff;
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.availability-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-availability {
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px; 
+}
+
+.btn-availability.active, .btn-availability:hover {
+    background-color: #e6f7ff;
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* General Style Adjustments */
+.main-content h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.nav-buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 210px;
+    padding-top: 20px;
+}
+
+.nav-buttons2{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 189px;
+    padding-top: 20px;
+}
+
+.nav-buttons3{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 92px;
+    padding-top: 20px;
+}
+
+
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #b6bac2;
+    color: #333;
+}
+
+.nav-buttons .btn:hover {
+    opacity: 0.8;
+}
+
+/* Step 3 - Car Preferences */
+.preference-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.preference-option {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.preference-option.active {
+    background-color: #e6f7ff;
+    border-color: #28a745;
+    color: #28a745;
+}
+
+
+
+
+
+/* Step 4 - Budget Slider Styles */
+.budget-range {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.budget-slider {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    padding-bottom: 40px; 
+}
+
+input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    height: 5px;
+    border-radius: 5px;
+}
+
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #1890ff;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #1890ff;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.slider-ticks {
+    position: absolute;
+    width: 100%;
+    bottom: 10px;
+}
+
+.tick {
+    position: absolute;
+    font-size: 12px;
+    color: #666;
+    transform: translateX(-50%);
+}
+
+.tick::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background-color: #666;
+    top: -15px;
+    left: 50%;
+}
+
+.budget-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1890ff;
+    margin-top: 20px;
+}
+
+.budget-range {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.budget-select {
+    width: 45%;
+}
+
+.budget-select label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.budget-select select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.budget-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+    margin-top: 20px;
+}
+
+/* Step 5 and 6 - Travel Range */
+.info-box {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.info-box p {
+    margin: 0;
+    color: #0050b3;
+}
+
+.weekday-travel, .weekend-travel {
+    margin-top: 20px;
+}
+
+.select-dropdown {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.address-input input {
+    width: 98%;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    margin-bottom: 15px;
+}
+
+
+#calculateDistance {
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.distance-input {
+    display: flex;
+    gap: 10px;
+}
+
+.distance-input input[type="number"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.distance-input .select-dropdown {
+    width: auto;
+    margin-bottom: 0;
+}
+
+/* Step 7 - Furthest Destination */
+.destination-input {
+    margin-bottom: 20px;
+}
+
+.destination-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#destinationMap {
+    height: 300px;
+    width: 100%;
+    margin: 4px 0;
+}
+
+#distanceResult {
+    background-color: #e6f7ff;
+    border: 1px solid #9af491;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 20px;
+    color: #28a745;
+    font-weight: bold;;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .main-content {
+        padding: 10px;
+    }
+    
+
+    .address-input {
+        width: 94%;
+    }
+
+    .body-style-options {
+        justify-content: center;
+    }
+    
+    .availability-options {
+        flex-direction: column;
+    }
+    
+    .btn-availability {
+        margin-bottom: 10px;
+    }
+}
+
+/* Ensure content doesn't push too close to bottom buttons */
+.main-content-inner > *:last-child {
+    margin-bottom: 20px;
+}
+
+
+.spinner {
+    display: none;
+    width: 50px;
+    height: 50px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+
+#recommendationText {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 180px;
+    padding: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.preference-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.preference-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: move;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.preference-option:hover {
+    background-color: #f8f8f8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.preference-option.dragging {
+    opacity: 0.6;
+    background-color: #e6f7ff;
+}
+
+.preference-number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.preference-text {
+    flex-grow: 1;
+    font-size: 16px;
+    color: #333;
+}
+
+.preference-option i {
+    color: #bbb;
+    margin-left: 10px;
+}
+
+  
