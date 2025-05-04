@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This document serves as an essential guide for the iteration analysis and design of our project, **"Promoting Electric Vehicle Adoption to Combat Climate Change in Melbourne."** It outlines the project’s objectives, target audience, and current iteration plans.
+This document serves as an essential guide for the iteration analysis and design of the project, **"Promoting Electric Vehicle Adoption to Combat Climate Change in Melbourne."** It outlines the project’s objectives, target audience, and current iteration plans.
 
 ## Project Overview
 
